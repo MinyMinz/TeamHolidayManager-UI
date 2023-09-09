@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { goto } from "$app/navigation";
   import Modal from "$lib/components/modal/GlobalModal.svelte";
   import { editMode } from "$lib/components/stores/stores";
   import type { UserWithPassword } from "$lib/components/types/customTypes";
@@ -23,9 +22,7 @@
   let selectedTeam = userData.team_name;
   let selectedRole = userData.role_name;
 
-  if (!loggedInUser) {
-    goto("/");
-  } else if (
+  if (
     loggedInUser.role_name === "SuperAdmin" ||
     loggedInUser.role_name === "Admin"
   ) {
@@ -44,7 +41,6 @@
     const teamResponse = await fetch(url);
     const teamData = await teamResponse.json();
     teams = teamData;
-    console.log(teams);
   }
 
   async function fetchRoles() {
@@ -56,10 +52,23 @@
     const roleResponse = await fetch(url);
     const roleData = await roleResponse.json();
     roles = roleData;
-    console.log(roles);
   }
 
   async function updateUser() {
+    if (loggedInUser?.role_name == "User") {
+      if (selectedTeam != loggedInUser?.team_name || selectedRole != "User") {
+        msg = "You do not have permission to change your team or role.";
+        return;
+      } else if (loggedInUser?.role_name == "Admin") {
+        if (selectedRole !== "User") {
+          msg = "You do not have permission to edit Admins or SuperAdmins.";
+          return;
+        } else if (selectedTeam !== loggedInUser?.team_name) {
+          msg = "You do not have permission to put users in other teams.";
+          return;
+        }
+      }
+    }
     try {
       let inputs = document.querySelectorAll(
         ".form-input"
@@ -83,9 +92,8 @@
       });
       if (!response.ok) {
         if (response.status === 422) {
-          msg = "Please fill in all correctly fields";
-        }
-        else{
+          msg = "Please fill in all fields correctly!";
+        } else {
           msg = `Status: ${response.status} `;
         }
         throw new Error(msg);

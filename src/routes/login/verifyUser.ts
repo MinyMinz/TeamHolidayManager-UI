@@ -8,11 +8,11 @@ export async function verifyCredentials(email: string, password: string) {
 
     if (userData.email === email && userData.password === password) {
       authMessage.set(null); // Clear any previous error messages
-      const { id, email, team_name, role_name } = userData;
+      const { id, email, full_name, team_name, role_name } = userData;
       isLoggedIn.set(true); // Set global user state
       window.sessionStorage.setItem(
         "userLoggedIn",
-        JSON.stringify({ id, email, team_name, role_name })
+        JSON.stringify({ id, email, full_name, team_name, role_name })
       );
       goto("/"); // Redirect to home page
     } else {

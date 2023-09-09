@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { goto, invalidateAll } from "$app/navigation";
   import {
     createMode,
     deleteMode,
@@ -13,9 +12,6 @@
   import EditModal from "./editModal.svelte";
 
   onMount(async () => {
-    if (!loggedInUser) {
-      goto("/");
-    }
     //fetch the users on page load and set the userMap
     fetchUsers().then((res) => {
       userMap = res;
@@ -48,7 +44,7 @@
       } else if (loggedInUser.role_name === "SuperAdmin") {
         url;
       } else {
-        throw new Error(`Failed to fetch data. Invalid user role.`);
+        throw new Error(`Failed to fetch data. Invalid Permisions.`);
       }
 
       const response = await fetch(url);
@@ -58,7 +54,6 @@
       }
 
       const data = await response.json();
-      const userMap = new Map();
 
       // //if the response is an array, map the array to the userMap
       if (Array.isArray(data)) {
@@ -93,37 +88,36 @@
 </script>
 
 <main class="page">
-  {#if userMap.size === 0}
-    <div class="flex flex-col items-center justify-center h-full">
-      <h1 class="text-3xl font-semibold text-gray-900 dark:text-white">
-        No users found
-      </h1>
-      <p class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
-        There are no users in the database.
-      </p>
-    </div>
-  {:else}
-    <div class="tablePage relative overflow-x-auto shadow-md sm:rounded-lg">
-      <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-        <caption
-          class="p-5 font-semibold text-left text-gray-900 dark:text-white relative"
+  <div class="tablePage relative overflow-x-auto shadow-md sm:rounded-lg">
+    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+      <caption
+        class="p-5 font-semibold text-left text-gray-900 dark:text-white relative"
+      >
+        <h1 class="text-2xl">User Management</h1>
+        <p class="mt-1 text-lg font-normal text-gray-500 dark:text-gray-400">
+          Here you can create, edit or delete users.
+        </p>
+        <button
+          type="button"
+          class="createButton absolute bottom-2 right-24"
+          on:click={() => setCreateMode()}
         >
-          <h1 class="text-2xl">User Management</h1>
-          <p class="mt-1 text-lg font-normal text-gray-500 dark:text-gray-400">
-            Search for a user by email, username, user id or role. Here you can
-            also create, edit or delete users.
+          <p class="icons">
+            Create User
+            <Icon icon="mdi:account-plus" inline={true} />
           </p>
-          <button
-            type="button"
-            class="createButton"
-            on:click={() => setCreateMode()}
-          >
-            <p class="icons">
-              Create User
-              <Icon icon="mdi:account-plus" inline={true} />
-            </p>
-          </button>
-        </caption>
+        </button>
+      </caption>
+      {#if userMap.size === 0}
+        <div class="flex flex-col items-center justify-center h-full">
+          <h1 class="text-3xl font-semibold text-gray-900 dark:text-white">
+            No users found
+          </h1>
+          <p class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
+            There are no users in the database.
+          </p>
+        </div>
+      {:else}
         <thead
           class="text-center text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-white"
         >
@@ -156,23 +150,25 @@
                     <Icon icon="mdi:account-edit" inline={true} />
                   </p>
                 </button>
-                <button
-                  type="button"
-                  class="deleteButton"
-                  on:click={() => setDeleteMode(item[1])}
-                >
-                  <p class="icons">
-                    Delete
-                    <Icon icon="mdi:account-remove" inline={true} />
-                  </p>
-                </button>
+                {#if loggedInUser?.role_name != "Admin" || loggedInUser?.role_name != "SuperAdmin"}
+                  <button
+                    type="button"
+                    class="deleteButton"
+                    on:click={() => setDeleteMode(item[1])}
+                  >
+                    <p class="icons">
+                      Delete
+                      <Icon icon="mdi:account-remove" inline={true} />
+                    </p>
+                  </button>
+                {/if}
               </td>
             </tr>
           {/each}
         </tbody>
-      </table>
-    </div>
-  {/if}
+      {/if}
+    </table>
+  </div>
 </main>
 
 {#if !showModal}
@@ -190,5 +186,5 @@
 {/if}
 
 {#if $deleteMode}
-  <DeleteModal username={currentUserData} bind:showModal />
+  <DeleteModal user={currentUserData} bind:showModal />
 {/if}

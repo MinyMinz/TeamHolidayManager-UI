@@ -1,15 +1,38 @@
 <script lang="ts">
   import Modal from "$lib/components/modal/GlobalModal.svelte";
-  import { deleteMode } from "$lib/components/stores/stores";
+  import { deleteMode, isLoggedIn } from "$lib/components/stores/stores";
 
   export let showModal = false;
-  export let username: any; //= { id: Number, full_name: String };
+  export let user: any;
   let msg = "";
 
+  const loggedInUser: any = {};
+  if (typeof sessionStorage !== "undefined") {
+    const userLoggedIn = sessionStorage.getItem("userLoggedIn");
+    if (userLoggedIn !== null) {
+      for (const [key, value] of Object.entries(JSON.parse(userLoggedIn))) {
+        loggedInUser[key] = value;
+      }
+    }
+  }
+
   async function deleteUser() {
+    if(loggedInUser.role_name === "User"){
+      msg = "You do not have permission to delete users."
+      return;
+    }
+    else if(loggedInUser.role === "Admin" && user.role_name === "Admin"){
+      msg = "You cannot delete Admins."
+        return;
+    }
+    else if(loggedInUser.role === "SuperAdmin" && user.role_name === "SuperAdmin"){
+      msg = "You cannot delete SuperAdmin."
+        return;
+    }
+
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/users?user_id=` + username.id,
+        `http://127.0.0.1:8000/users?user_id=` + user.id,
         { method: "DELETE" }
       );
 
@@ -29,7 +52,7 @@
 
 <Modal bind:showModal>
   <h2 class="text-black dark:text-white" slot="header">
-    Please confirm you wish to delete {username.full_name} from the system.
+    Please confirm you wish to delete {user.full_name} from the system.
   </h2>
   {#if msg}
     <p class="font-bold text-red-600 dark:text-red-400 text-center">{msg}</p>

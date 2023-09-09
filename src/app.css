@@ -35,7 +35,7 @@
   }
 
   .createButton {
-    @apply bg-gradient-to-r from-green-400 to-green-700 hover:bg-gradient-to-bl   w-auto h-auto py-3 px-4 rounded-lg mt-6 mb-1 absolute bottom-2 right-24;
+    @apply bg-gradient-to-r from-green-400 to-green-700 hover:bg-gradient-to-bl   w-auto h-auto py-3 px-4 rounded-lg mt-6 mb-1;
   }
 
   .createOrUpdateSubmitButton {

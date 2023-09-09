@@ -58,6 +58,24 @@
   }
 
   async function createUser() {
+    if (loggedInUser?.role_name == "User") {
+      msg = "You do not have permission to create users.";
+      return;
+    } else if (loggedInUser?.role_name == "Admin") {
+      if (selectedRole !== "User") {
+        msg = "You do not have permission to create Admins or SuperAdmins.";
+        return;
+      }
+      else if(selectedTeam !== loggedInUser?.team_name){
+        msg = "You do not have permission to create users in other teams.";
+        return;
+      }
+    } else if (loggedInUser?.role_name == "SuperAdmin") {
+      if (selectedRole === "SuperAdmin") {
+        msg = "You cannot create more superAdmins";
+        return;
+      }
+    }
     try {
       let inputs = document.querySelectorAll(
         ".form-input"
@@ -79,11 +97,10 @@
         },
         body: JSON.stringify(inputList),
       });
-      if (!response.ok) {  
+      if (!response.ok) {
         if (response.status === 422) {
-          msg = "Please fill in all correctly fields";
-        }
-        else{
+          msg = "Please fill in all fields correctly!";
+        } else {
           msg = `Status: ${response.status} `;
         }
         throw new Error(msg);
