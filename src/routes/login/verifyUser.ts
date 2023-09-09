@@ -1,5 +1,5 @@
 import { goto } from "$app/navigation";
-import { userLoggedIn, authMessage } from "../../lib/components/stores/stores"; // get global user state
+import { authMessage, isLoggedIn} from "$lib/components/stores/stores"; // get global user state
 
 export async function verifyCredentials(email: string, password: string) {
   try {
@@ -8,7 +8,12 @@ export async function verifyCredentials(email: string, password: string) {
 
     if (userData.email === email && userData.password === password) {
       authMessage.set(null); // Clear any previous error messages
-      userLoggedIn.set(userData); // Store user data in global store (this is not secure but it's just for demo authentication purposes)
+      const { id, email, team_name, role_name } = userData;
+      isLoggedIn.set(true); // Set global user state
+      window.sessionStorage.setItem(
+        "userLoggedIn",
+        JSON.stringify({ id, email, team_name, role_name })
+      );
       goto("/"); // Redirect to home page
     } else {
       authMessage.set("Invalid email or password.");

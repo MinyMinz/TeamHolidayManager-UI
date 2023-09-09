@@ -1,12 +1,16 @@
 <script lang="ts">
+  import { goto, invalidateAll } from "$app/navigation";
+  import {
+    createMode,
+    deleteMode,
+    editMode,
+  } from "$lib/components/stores/stores";
+  import type { User } from "$lib/components/types/customTypes";
+  import Icon from "@iconify/svelte";
   import { onMount } from "svelte";
-  import { get } from "svelte/store";
-  import { goto } from "$app/navigation";
-  import { userLoggedIn } from "$lib/components/stores/stores";
-  import MdModeEdit from 'svelte-icons/md/MdModeEdit.svelte'
-
-  const loggedInUser = get(userLoggedIn);
-  let userMap = new Map();
+  import CreateModal from "./createModal.svelte";
+  import DeleteModal from "./deleteModal.svelte";
+  import EditModal from "./editModal.svelte";
 
   onMount(async () => {
     if (!loggedInUser) {
@@ -18,15 +22,33 @@
     });
   });
 
+  let showModal: boolean = false;
+  let currentUserData: User;
+  let userMap = new Map();
+
+  const loggedInUser: any = {};
+  if (typeof sessionStorage !== "undefined") {
+    const userLoggedIn = sessionStorage.getItem("userLoggedIn");
+    if (userLoggedIn !== null) {
+      for (const [key, value] of Object.entries(JSON.parse(userLoggedIn))) {
+        loggedInUser[key] = value;
+      }
+    }
+  }
+
   let columnNames = ["id", "Full name", "email", "password", "Team", "Role"];
 
   async function fetchUsers() {
     try {
       let url = `http://127.0.0.1:8000/users`;
-      if (loggedInUser?.role_name === "Standard") {
+      if (loggedInUser?.role_name === "User") {
         url += `?user_id=${loggedInUser.id}`;
-      } else if (loggedInUser?.role_name === "Admin") {
+      } else if (loggedInUser.role_name === "Admin") {
         url += `?team=${loggedInUser.team_name}`;
+      } else if (loggedInUser.role_name === "SuperAdmin") {
+        url;
+      } else {
+        throw new Error(`Failed to fetch data. Invalid user role.`);
       }
 
       const response = await fetch(url);
@@ -38,9 +60,11 @@
       const data = await response.json();
       const userMap = new Map();
 
+      // //if the response is an array, map the array to the userMap
       if (Array.isArray(data)) {
         data.forEach((value, index) => userMap.set(index, value));
       } else {
+        //if there is only one user, the response is not an array
         userMap.set(0, data);
       }
       return userMap;
@@ -50,49 +74,121 @@
     }
   }
 
+  function setEditMode(userData: any) {
+    showModal = true;
+    $editMode = true;
+    currentUserData = userData;
+  }
+
+  function setCreateMode() {
+    showModal = true;
+    $createMode = true;
+  }
+
+  function setDeleteMode(userData: any) {
+    showModal = true;
+    $deleteMode = true;
+    currentUserData = userData;
+  }
 </script>
 
-<div class="tablePage">
-  <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-    <table
-      class="w-full text-sm text-left text-gray-500 dark:text-gray-400"
-    >
-      <caption
-        class="p-5 text-lg font-semibold text-left text-gray-900 bg-white dark:text-white dark:bg-gray-800"
-      >
-        User Management
-        <p class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
-          Search for a user by email, username, user id or role. Here you can
-          also create, edit or delete users.
-        </p>
-      </caption>
-      <thead
-        class="text-center text-sm text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-white"
-      >
-        <tr>
-          {#each columnNames as column}
-            <th scope="col" class="text-base px-1 py-2">
-              {column}
-            </th>
-          {/each}
-          <th scope="col" class="text-base px-1 py-2">Actions</th>
-          
-        </tr>
-      </thead>
-      <tbody class="text-center">
-        {#each userMap as item (item[0])}
-          <tr class="text-lg dark:text-gray-200">
-            <td>{item[1].id}</td>
-            <td>{item[1].full_name}</td>
-            <td>{item[1].email}</td>
-            <td>{item[1].password}</td>
-            <td>{item[1].role_name}</td>
-            <td>{item[1].team_name}</td>
-            <td class="w-8 h-8"><MdModeEdit />
-            </td>
+<main class="page">
+  {#if userMap.size === 0}
+    <div class="flex flex-col items-center justify-center h-full">
+      <h1 class="text-3xl font-semibold text-gray-900 dark:text-white">
+        No users found
+      </h1>
+      <p class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
+        There are no users in the database.
+      </p>
+    </div>
+  {:else}
+    <div class="tablePage relative overflow-x-auto shadow-md sm:rounded-lg">
+      <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+        <caption
+          class="p-5 font-semibold text-left text-gray-900 dark:text-white relative"
+        >
+          <h1 class="text-2xl">User Management</h1>
+          <p class="mt-1 text-lg font-normal text-gray-500 dark:text-gray-400">
+            Search for a user by email, username, user id or role. Here you can
+            also create, edit or delete users.
+          </p>
+          <button
+            type="button"
+            class="createButton"
+            on:click={() => setCreateMode()}
+          >
+            <p class="icons">
+              Create User
+              <Icon icon="mdi:account-plus" inline={true} />
+            </p>
+          </button>
+        </caption>
+        <thead
+          class="text-center text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-white"
+        >
+          <tr>
+            {#each columnNames as column}
+              <th scope="col" class="text-base">
+                {column}
+              </th>
+            {/each}
+            <th class="text-base w-1/6"> Actions </th>
           </tr>
-        {/each}
-      </tbody>
-    </table>
-  </div>
-</div>
+        </thead>
+        <tbody class="text-center">
+          {#each userMap as item (item[0])}
+            <tr class="text-lg text-black dark:text-gray-200">
+              <td>{item[1].id}</td>
+              <td>{item[1].full_name}</td>
+              <td>{item[1].email}</td>
+              <td>{item[1].password}</td>
+              <td>{item[1].team_name}</td>
+              <td>{item[1].role_name}</td>
+              <td>
+                <button
+                  type="button"
+                  class="editButton"
+                  on:click={() => setEditMode(item[1])}
+                >
+                  <p class="icons">
+                    Edit
+                    <Icon icon="mdi:account-edit" inline={true} />
+                  </p>
+                </button>
+                <button
+                  type="button"
+                  class="deleteButton"
+                  on:click={() => setDeleteMode(item[1])}
+                >
+                  <p class="icons">
+                    Delete
+                    <Icon icon="mdi:account-remove" inline={true} />
+                  </p>
+                </button>
+              </td>
+            </tr>
+          {/each}
+        </tbody>
+      </table>
+    </div>
+  {/if}
+</main>
+
+{#if !showModal}
+  {createMode.set(false)}
+  {editMode.set(false)}
+  {deleteMode.set(false)}
+{/if}
+
+{#if $createMode}
+  <CreateModal bind:showModal />
+{/if}
+
+{#if $editMode}
+  <EditModal userData={currentUserData} bind:showModal />
+{/if}
+
+{#if $deleteMode}
+  <DeleteModal username={currentUserData} bind:showModal />
+{/if}

@@ -1,6 +1,11 @@
 import { writable } from "svelte/store";
-import type { user } from "../types/customTypes";
 
-export const userLoggedIn = writable<user | null>(null); // Initialize as null
+export const isLoggedIn = writable<boolean>(false); // Initialize as false
 
 export const authMessage = writable<string | null>(null); // Initialize as null
+
+export const createMode = writable<boolean>(false); // Initialize as false
+
+export const editMode = writable<boolean>(false); // Initialize as false
+
+export const deleteMode = writable<boolean>(false); // Initialize as false

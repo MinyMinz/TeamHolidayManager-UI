@@ -3,8 +3,7 @@
 @layer components{
 
     .login-container {
-        @apply dark:bg-gray-800
-        w-full h-full flex flex-col items-center justify-center;
+        @apply w-full h-full flex flex-col items-center justify-center;
     } 
 
     .login-title{

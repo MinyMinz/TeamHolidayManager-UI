@@ -1,39 +1,58 @@
 <script>
-  import { userLoggedIn } from "../stores/stores";
   import Loginlogoutbutton from "./loginlogoutbutton.svelte";
+  import Icon from "@iconify/svelte";
+  import { isLoggedIn } from "$lib/components/stores/stores";
 
   export let dark = true;
-
+  
 </script>
 
-<nav class="bg-gray-400 dark:bg-slate-900 px-6 py-3 mx-auto md:flex md:justify-between md:items-center">
+<nav
+  class="bg-gray-400 dark:bg-slate-900 md:flex md:justify-between md:items-center"
+>
   <div class="flex items-center justify-between">
     <a
-      class="text-xl font-bold text-gray-800 dark:text-white md:text-2xl hover:text-blue-400"
-      href="/">Phoebus Software</a>
+      class="text-xl font-bold text-gray-800 hover:text-blue-500 dark:text-white md:text-2xl dark:hover:text-blue-300"
+      href="/">Phoebus Software</a
+    >
   </div>
 
   <div
     class="flex-col mt-8 space-y-4 md:flex md:space-y-0 md:flex-row md:items-center md:space-x-10 md:mt-0"
   >
-    {#if $userLoggedIn}
-      <a class="text-gray-800 dark:text-white hover:text-blue-400" href="/holidayRequest"
-		>
-		HolidayRequests</a>
-      <a class="text-gray-800 dark:text-white hover:text-blue-400" href="/calendar"
-		>
-		Calendar</a>
-      <a class="text-gray-800 dark:text-white hover:text-blue-400" href="/user"
-	  	>
-	  	Users</a>
+    {#if $isLoggedIn}
+      <a
+        class="text-gray-800 hover:text-blue-500 dark:text-white dark:hover:text-blue-300"
+        href="/holidayRequest"
+      >
+        HolidayRequests</a
+      >
+      <a class="text-gray-800 hover:text-blue-500 dark:text-white dark:hover:text-blue-300" href="/user">
+        Users</a
+      >
     {/if}
   </div>
-  <div class="flex-0  text-gray-800 dark:text-white">
-    <button class = "mx-5"
+  <div class="flex text-gray-800 dark:text-white">
+    <button
+      class="mx-2 float-left"
       on:click|preventDefault={() => {
         dark = !dark;
       }}
-      >{dark ? "Dark" : "Light"}
+    >
+      {#if dark}
+        <Icon
+          inline
+          icon="line-md:sunny-outline-to-moon-loop-transition"
+          style="width: 30px; height: 30px;"
+        />
+      {/if}
+      {#if !dark}
+        <Icon
+          inline
+          icon="line-md:moon-to-sunny-outline-loop-transition"
+          style="width: 30px; height: 30px"
+        />
+      {/if}
     </button>
     <Loginlogoutbutton />
   </div>
