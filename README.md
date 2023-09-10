@@ -1,22 +1,43 @@
-# create-svelte
+# Front-end to Team Holiday Manager
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+This is the front-end to the Team Holiday Manager application. It is built using SvelteKit.
 
-## Creating a project
+## Getting Started
 
-If you're seeing this, you've probably already done this step. Congrats!
+To get started, clone this repository and run the following commands:
 
 ```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
+cd team-holiday-manager-ui
+npm install
 ```
 
-## Developing
+## Running the application (if back-end is already running)
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+To run the application locally ensure the back-end is running locally also via Docker or through an venv on an IDE, run the following command:
+
+```bash
+npm run dev
+```
+
+This will start the application on port 5173. You can then access the application at http://localhost:5173/.
+
+## Running the application with the back-end in docker
+
+To run the application with the back-end in Docker, you will need to run the back-end in Docker. 
+Instructions for doing this can be found in the [TeamHolidayManager](https://github.com/MinyMinz/TeamHolidayManager) repository.
+
+Once the back-end is running, you can run the front-end with the following command:
+
+```bash
+npm run dev 
+```
+
+This will start the application on port 5173. You can then access the application at http://localhost:5173/.
+
+
+## Below is for development purposes only
+
+To start a development server:
 
 ```bash
 npm run dev
@@ -35,4 +56,4 @@ npm run build
 
 You can preview the production build with `npm run preview`.
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+> To deploy the app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
