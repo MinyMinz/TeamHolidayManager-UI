@@ -114,7 +114,7 @@
   <h2 class="text-black dark:text-white" slot="header">Editing user</h2>
 
   <form class="text-black dark:text-white">
-    <label for="fullname">Fullname:</label><br />
+    <label for="fullname">*Fullname:</label><br />
     <input
       class="form-input"
       type="text"
@@ -122,7 +122,7 @@
       name="fullname"
       value={userData.full_name}
     /><br />
-    <label for="email">Email:</label><br />
+    <label for="email">*Email:</label><br />
     <input
       class="form-input"
       type="email"
@@ -130,7 +130,7 @@
       name="email"
       value={userData.email}
     /><br />
-    <label for="password">Password:</label><br />
+    <label for="password">*Password:</label><br />
     <input
       class="form-input"
       type="text"
@@ -139,7 +139,7 @@
       value={userData.password}
     /><br />
     {#if loggedInUser?.role_name === "User" || loggedInUser?.role_name === "Admin"}
-      <label class="text-gray-600" for="teamName">Team Name:</label><br />
+      <label class="text-gray-600" for="teamName">*Team Name:</label><br />
       <input
         class="disabled-form-input"
         type="text"
@@ -148,7 +148,7 @@
         value={userData?.team_name}
         disabled={true}
       /><br />
-      <label class="text-gray-600" for="roleName">Role Name:</label><br />
+      <label class="text-gray-600" for="roleName">*Role Name:</label><br />
       <input
         class="disabled-form-input"
         type="text"
@@ -164,7 +164,7 @@
         >Team Name:</label
       >
       <select class="selectorDropdown" bind:value={selectedTeam}>
-        <option selected value>Choose Team</option>
+        <option selected value>*Choose Team</option>
         {#each teams as team}
           {#if teams.name !== "Super"}
             <option value={team.name}>{team.name}</option>
@@ -178,7 +178,7 @@
         >Role Name:</label
       >
       <select class="selectorDropdown" bind:value={selectedRole}>
-        <option selected value>Choose Role</option>
+        <option selected value>*Choose Role</option>
         {#each roles as role}
           {#if role.name !== "SuperAdmin"}
             <option value={role.name}>{role.name}</option>

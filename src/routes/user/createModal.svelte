@@ -128,12 +128,12 @@
 <Modal bind:showModal>
   <h1 class="text-black dark:text-white" slot="header">Creating user</h1>
   <form class="text-black dark:text-white">
-    <label for="fullname">Fullname:</label><br />
+    <label for="fullname">*Fullname:</label><br />
     <input class="form-input" type="text" id="full_name" name="fullname" /><br
     />
-    <label for="email">Email:</label><br />
+    <label for="email">*Email:</label><br />
     <input class="form-input" type="email" id="email" name="email" /><br />
-    <label for="password">Password:</label><br />
+    <label for="password">*Password:</label><br />
     <input
       class="form-input"
       type="text"
@@ -141,7 +141,7 @@
       name="password"
     /><br />
     {#if loggedInUser?.role_name === "User" || loggedInUser?.role_name === "Admin"}
-      <label for="teamName">Team Name:</label><br />
+      <label for="teamName">*Team Name:</label><br />
       <input
         class="form-input"
         type="text"
@@ -150,7 +150,7 @@
         value={loggedInUser.team_name}
         disabled={true}
       /><br />
-      <label for="roleName">Role Name:</label><br />
+      <label for="roleName">*Role Name:</label><br />
       <input
         class="form-input"
         type="text"
@@ -166,7 +166,7 @@
         >Team Name:</label
       >
       <select class="selectorDropdown" bind:value={selectedTeam}>
-        <option selected value>Choose Team</option>
+        <option selected value>*Choose Team</option>
         {#each teams as team}
           {#if teams.name !== "Super"}
             <option value={team.name}>{team.name}</option>
@@ -180,7 +180,7 @@
         >Role Name:</label
       >
       <select class="selectorDropdown" bind:value={selectedRole}>
-        <option selected value>Choose Role</option>
+        <option selected value>*Choose Role</option>
         {#each roles as role}
           {#if role.name !== "SuperAdmin"}
             <option value={role.name}>{role.name}</option>

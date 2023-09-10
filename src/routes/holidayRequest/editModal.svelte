@@ -96,7 +96,7 @@
         name="Description"
         value={holidayData.description}
       /><br />
-      <label for="start_date">Start Date:</label><br />
+      <label for="start_date">*Start Date:</label><br />
       <input
         class="form-input"
         type="date"
@@ -105,7 +105,7 @@
         min="2000-01-02"
         value={holidayData.start_date}
       /><br />
-      <label for="end_date">End Date:</label><br />
+      <label for="end_date">*End Date:</label><br />
       <input
         class="form-input"
         type="date"
@@ -124,7 +124,7 @@
         <option value="AM">AM</option>
         <option value="PM">PM</option>
       </select>
-      <label for="fullname">Fullname:</label><br />
+      <label for="fullname">*Fullname:</label><br />
       {#if loggedInUser?.role_name === "User"}
         <input
           class="form-input"
@@ -143,7 +143,7 @@
           value={holidayData.full_name}
           disabled={false}
         /><br />
-        <label for="approved">Approve:</label><br />
+        <label for="approved">*Approve:</label><br />
         <select class="selectorDropdown" bind:value={isApproved}>
           <option value={null}>N/A</option>
           <option value={true}>Approve</option>

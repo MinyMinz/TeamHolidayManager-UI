@@ -70,7 +70,7 @@
       id="description"
       name="Description"
     /><br />
-    <label for="start_date">Start Date:</label><br />
+    <label for="start_date">*Start Date:</label><br />
     <input
       class="form-input"
       type="date"
@@ -78,7 +78,7 @@
       name="start_date"
       min="2000-01-02"
     /><br />
-    <label for="end_date">End Date:</label><br />
+    <label for="end_date">*End Date:</label><br />
     <input
       class="form-input"
       type="date"
@@ -96,7 +96,7 @@
       <option value="AM">Morning</option>
       <option value="PM">Afternoon</option>
     </select>
-    <label for="fullname">Fullname:</label><br />
+    <label for="fullname">*Fullname:</label><br />
     {#if loggedInUser?.role_name === "User"}
       <input
         class="form-input"
