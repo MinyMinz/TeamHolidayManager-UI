@@ -30,7 +30,7 @@
         class="text-gray-800 hover:text-blue-500 dark:text-white dark:hover:text-blue-300"
         href="/user"
       >
-        Users</a
+        User Management</a
       >
     {/if}
   </div>
