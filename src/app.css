@@ -5,11 +5,6 @@
 @tailwind utilities;
 
 @layer components {
-  .form-input {
-    @apply text-black dark:text-white
-        bg-gray-200 dark:bg-gray-800
-        w-full py-2 px-3 rounded-sm;
-  }
 
   .defaultPage {
     @apply bg-gray-300 dark:bg-gray-800
@@ -30,6 +25,17 @@
         min-h-screen 
         flex flex-col 
         justify-normal;
+  }
+  .form-input {
+    @apply text-black dark:text-white
+        bg-gray-200 dark:bg-gray-800
+        w-full py-2 px-3 rounded-sm;
+  }
+
+  .disabled-form-input {
+    @apply text-gray-600 dark:text-gray-600
+        bg-gray-400 dark:bg-gray-800
+        w-full py-2 px-3 rounded-sm;
   }
 
   .loginButton {

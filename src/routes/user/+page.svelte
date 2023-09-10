@@ -114,16 +114,18 @@
         <p class="mt-1 text-lg font-normal text-gray-500 dark:text-gray-400">
           Here you can create, edit or delete users.
         </p>
-        <button
-          type="button"
-          class="createButton absolute bottom-2 right-24"
-          on:click={() => setCreateMode()}
-        >
-          <p class="icons">
-            Create User
-            <Icon icon="mdi:account-plus" inline={true} />
-          </p>
-        </button>
+        {#if loggedInUser?.role_name !== "User"}
+          <button
+            type="button"
+            class="createButton absolute bottom-2 right-24"
+            on:click={() => setCreateMode()}
+          >
+            <p class="icons">
+              Create User
+              <Icon icon="mdi:account-plus" inline={true} />
+            </p>
+          </button>
+        {/if}
       </caption>
       {#if userMap.size === 0}
         <div class="flex flex-col items-center justify-center h-full">
@@ -152,7 +154,8 @@
             <tr class="text-lg text-black dark:text-gray-200">
               <td>{item[1].full_name}</td>
               <td>{item[1].email}</td>
-              <td>{'*'.repeat(item[1].password.length)}</td> <!-- This is to replace password with * (display only)-->
+              <td>{"*".repeat(item[1].password.length)}</td>
+              <!-- This is to replace password with * might get rid of length and just display a fixed number of * (display only)-->
               <td>{item[1].team_name}</td>
               <td>{item[1].role_name}</td>
               <td>
@@ -186,12 +189,6 @@
     </table>
   </div>
 </main>
-
-{#if !showModal}
-  {createMode.set(false)}
-  {editMode.set(false)}
-  {deleteMode.set(false)}
-{/if}
 
 {#if $createMode}
   <CreateModal bind:showModal />

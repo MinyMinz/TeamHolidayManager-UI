@@ -139,18 +139,18 @@
       value={userData.password}
     /><br />
     {#if loggedInUser?.role_name === "User" || loggedInUser?.role_name === "Admin"}
-      <label for="teamName">Team Name:</label><br />
+      <label class="text-gray-600" for="teamName">Team Name:</label><br />
       <input
-        class="form-input"
+        class="disabled-form-input"
         type="text"
         id="team_name"
         name="teamName"
         value={userData?.team_name}
         disabled={true}
       /><br />
-      <label for="roleName">Role Name:</label><br />
+      <label class="text-gray-600" for="roleName">Role Name:</label><br />
       <input
-        class="form-input"
+        class="disabled-form-input"
         type="text"
         id="role_name"
         name="roleName"

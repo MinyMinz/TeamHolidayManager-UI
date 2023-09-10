@@ -206,12 +206,6 @@
   </div>
 </main>
 
-{#if !showModal}
-  {createMode.set(false)}
-  {editMode.set(false)}
-  {deleteMode.set(false)}
-{/if}
-
 {#if $createMode}
   <CreateModal bind:showModal />
 {/if}

@@ -20,8 +20,8 @@
   }
 
   async function updateHoliday() {
-    if (loggedInUser.role_name === "User" && loggedInUser.id !== holidayData.id) {
-      msg = "You do not have permission to edit this holiday request.";
+    if (loggedInUser.role_name === "User" && holidayData.approved) {
+      msg = "You cannot edit and approved holiday";
       return;
     }
     if (loggedInUser.role_name === "Admin" && loggedInUser.id === holidayData.user_id && isApproved !== holidayData.approved) {
