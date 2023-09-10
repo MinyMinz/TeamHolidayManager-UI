@@ -1,6 +1,6 @@
 # Front-end to Team Holiday Manager
 
-This is the front-end to the Team Holiday Manager application. It is built using SvelteKit.
+This is the front-end to the Team Holiday Manager application. It is built using Svelte with typescript and tailwind-css.
 
 ## Getting Started
 
