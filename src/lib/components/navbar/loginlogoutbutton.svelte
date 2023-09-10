@@ -17,14 +17,14 @@
 {#if $isLoggedIn}
   <button
     on:click={handleLogout}
-    class="px-4 py-2 text-sm font-medium tracking-wide text-black dark:text-white capitalize transition-colors duration-200 transform bg-blue-400 rounded-md hover:bg-blue-500 focus:outline-none focus:bg-blue-500"
+    class="loginButton"
   >
     Logout
   </button>
 {:else}
   <button
     on:click={() => goto("/login")}
-    class="px-4 py-2 text-sm font-medium tracking-wide text-black dark:text-white capitalize transition-colors duration-200 transform bg-blue-400 rounded-md hover:bg-blue-500 focus:outline-none focus:bg-blue-500"
+    class="loginButton"
   >
     Login
   </button>

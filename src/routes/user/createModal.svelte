@@ -39,10 +39,9 @@
     if (loggedInUser?.role_name === "Admin") {
       url += `?team_name=${loggedInUser.team_name}`;
     }
-    const teamResponse = await fetch(url);
+    const teamResponse = await window.fetch(url);
     const teamData = await teamResponse.json();
     teams = teamData;
-    console.log(teams);
   }
 
   async function fetchRoles() {
@@ -51,31 +50,12 @@
     if (loggedInUser?.role_name === "Admin") {
       url += `?role_name=User`;
     }
-    const roleResponse = await fetch(url);
+    const roleResponse = await window.fetch(url);
     const roleData = await roleResponse.json();
     roles = roleData;
-    console.log(roles);
   }
 
   async function createUser() {
-    if (loggedInUser?.role_name == "User") {
-      msg = "You do not have permission to create users.";
-      return;
-    } else if (loggedInUser?.role_name == "Admin") {
-      if (selectedRole !== "User") {
-        msg = "You do not have permission to create Admins or SuperAdmins.";
-        return;
-      }
-      else if(selectedTeam !== loggedInUser?.team_name){
-        msg = "You do not have permission to create users in other teams.";
-        return;
-      }
-    } else if (loggedInUser?.role_name == "SuperAdmin") {
-      if (selectedRole === "SuperAdmin") {
-        msg = "You cannot create more superAdmins";
-        return;
-      }
-    }
     try {
       let inputs = document.querySelectorAll(
         ".form-input"
@@ -83,13 +63,22 @@
       let inputList: any = {};
       //add the id to the inputList first as Null for new user
       inputList["id"] = null;
-      //add the rest of the inputs to the inputList
       inputs.forEach((input) => {
         inputList[input.id] = input.value;
       });
-      inputList.team_name = selectedTeam;
-      inputList.role_name = selectedRole;
-      const response = await fetch(`http://127.0.0.1:8000/users`, {
+      validatePermissions(inputList.role_name, inputList.team_name);
+      //add the rest of the inputs to the inputList
+      if (loggedInUser?.role_name === "SuperAdmin") {
+        if (selectedTeam === "" || selectedRole === "") {
+          msg = "Please select a team and role!";
+          return;
+        } else {
+          inputList.team_name = selectedTeam;
+          inputList.role_name = selectedRole;
+        }
+      }
+
+      const response = await window.fetch(`http://127.0.0.1:8000/users`, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -114,6 +103,26 @@
       throw err; // Re-throw the error to propagate it to the caller
     }
   }
+
+  function validatePermissions(role: string, team: string) {
+    if (loggedInUser?.role_name == "User") {
+      msg = "You do not have permission to create users.";
+      return;
+    } else if (loggedInUser?.role_name == "Admin") {
+      if (role !== "User") {
+        msg = "You do not have permission to create Admins or SuperAdmins.";
+        return;
+      } else if (team !== loggedInUser?.team_name) {
+        msg = "You do not have permission to create users in other teams.";
+        return;
+      }
+    } else if (loggedInUser?.role_name == "SuperAdmin") {
+      if (role === "SuperAdmin") {
+        msg = "You cannot create more superAdmins";
+        return;
+      }
+    }
+  }
 </script>
 
 <Modal bind:showModal>
@@ -127,7 +136,7 @@
     <label for="password">Password:</label><br />
     <input
       class="form-input"
-      type="password"
+      type="text"
       id="password"
       name="password"
     /><br />
@@ -159,7 +168,9 @@
       <select class="selectorDropdown" bind:value={selectedTeam}>
         <option selected value>Choose Team</option>
         {#each teams as team}
-          <option value={team.name}>{team.name}</option>
+          {#if teams.name !== "Super"}
+            <option value={team.name}>{team.name}</option>
+          {/if}
         {/each}
       </select>
 
@@ -171,7 +182,9 @@
       <select class="selectorDropdown" bind:value={selectedRole}>
         <option selected value>Choose Role</option>
         {#each roles as role}
-          <option value={role.name}>{role.name}</option>
+          {#if role.name !== "SuperAdmin"}
+            <option value={role.name}>{role.name}</option>
+          {/if}
         {/each}
       </select>
     {/if}

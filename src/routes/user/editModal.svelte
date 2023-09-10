@@ -38,7 +38,7 @@
     if (loggedInUser?.role_name === "Admin") {
       url += `?team_name=${loggedInUser.team_name}`;
     }
-    const teamResponse = await fetch(url);
+    const teamResponse = await window.fetch(url);
     const teamData = await teamResponse.json();
     teams = teamData;
   }
@@ -49,7 +49,7 @@
     if (loggedInUser?.role_name === "Admin") {
       url += `?role_name=User`;
     }
-    const roleResponse = await fetch(url);
+    const roleResponse = await window.fetch(url);
     const roleData = await roleResponse.json();
     roles = roleData;
   }
@@ -82,7 +82,7 @@
       });
       inputList.team_name = selectedTeam;
       inputList.role_name = selectedRole;
-      const response = await fetch(`http://127.0.0.1:8000/users`, {
+      const response = await window.fetch(`http://127.0.0.1:8000/users`, {
         method: "PUT",
         headers: {
           Accept: "application/json",
@@ -133,31 +133,12 @@
     <label for="password">Password:</label><br />
     <input
       class="form-input"
-      type="password"
+      type="text"
       id="password"
       name="password"
       value={userData.password}
     /><br />
-    {#if loggedInUser?.role_name === "User"}
-      <label for="teamName">Team Name:</label><br />
-      <input
-        class="form-input"
-        type="text"
-        id="team_name"
-        name="teamName"
-        value={userData?.team_name}
-        disabled={true}
-      /><br />
-      <label for="roleName">Role Name:</label><br />
-      <input
-        class="form-input"
-        type="text"
-        id="role_name"
-        name="roleName"
-        value={userData?.role_name}
-        disabled={true}
-      /><br />
-    {:else if loggedInUser?.role_name === "Admin"}
+    {#if loggedInUser?.role_name === "User" || loggedInUser?.role_name === "Admin"}
       <label for="teamName">Team Name:</label><br />
       <input
         class="form-input"
@@ -185,7 +166,9 @@
       <select class="selectorDropdown" bind:value={selectedTeam}>
         <option selected value>Choose Team</option>
         {#each teams as team}
-          <option value={team.name}>{team.name}</option>
+          {#if teams.name !== "Super"}
+            <option value={team.name}>{team.name}</option>
+          {/if}
         {/each}
       </select>
 
@@ -197,7 +180,9 @@
       <select class="selectorDropdown" bind:value={selectedRole}>
         <option selected value>Choose Role</option>
         {#each roles as role}
-          <option value={role.name}>{role.name}</option>
+          {#if role.name !== "SuperAdmin"}
+            <option value={role.name}>{role.name}</option>
+          {/if}
         {/each}
       </select>
     {/if}

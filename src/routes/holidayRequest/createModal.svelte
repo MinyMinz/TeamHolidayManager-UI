@@ -14,6 +14,7 @@
 
   export let showModal = false;
   let msg = "";
+  let selectedTimeOfDay: string | null = null;
 
   async function createHolidayRequest() {
     try {
@@ -31,7 +32,7 @@
       delete inputList.full_name;
       inputList.user_id = loggedInUser?.id;
       inputList.team_name = loggedInUser?.team_name;
-      inputList.approved = false;
+      inputList.approved = null;
       const response = await fetch(`http://127.0.0.1:8000/holiday-request`, {
         method: "POST",
         headers: {
@@ -90,7 +91,7 @@
       class="block text-sm font-medium text-gray-900 dark:text-white"
       >TimeOfDay:</label
     >
-    <select class="selectorDropdown">
+    <select class="selectorDropdown" bind:value={selectedTimeOfDay}>
       <option value={null}>N/A</option>
       <option value="AM">Morning</option>
       <option value="PM">Afternoon</option>

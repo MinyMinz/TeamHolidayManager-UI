@@ -4,21 +4,20 @@
   import { isLoggedIn } from "$lib/components/stores/stores";
 
   export let dark = true;
-  
 </script>
 
 <nav
-  class="bg-gray-400 dark:bg-slate-900 md:flex md:justify-between md:items-center"
+  class="bg-gray-400 dark:bg-slate-900 h-12 md:flex md:justify-between md:items-center"
 >
   <div class="flex items-center justify-between">
     <a
-      class="text-xl font-bold text-gray-800 hover:text-blue-500 dark:text-white md:text-2xl dark:hover:text-blue-300"
+      class="ml-1 text-xl font-bold text-gray-800 hover:text-blue-500 dark:text-white md:text-2xl dark:hover:text-blue-300"
       href="/">Phoebus Software</a
     >
   </div>
 
   <div
-    class="flex-col mt-8 space-y-4 md:flex md:space-y-0 md:flex-row md:items-center md:space-x-10 md:mt-0"
+    class="flex-col mt-8 space-y-4 md:flex md:space-y-0 md:flex-row md:items-center md:space-x-8 md:mt-0"
   >
     {#if $isLoggedIn}
       <a
@@ -27,7 +26,10 @@
       >
         HolidayRequests</a
       >
-      <a class="text-gray-800 hover:text-blue-500 dark:text-white dark:hover:text-blue-300" href="/user">
+      <a
+        class="text-gray-800 hover:text-blue-500 dark:text-white dark:hover:text-blue-300"
+        href="/user"
+      >
         Users</a
       >
     {/if}

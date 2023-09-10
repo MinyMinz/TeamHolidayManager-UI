@@ -3,7 +3,7 @@ import { authMessage, isLoggedIn} from "$lib/components/stores/stores"; // get g
 
 export async function verifyCredentials(email: string, password: string) {
   try {
-    const response = await fetch(`http://127.0.0.1:8000/users?email=${email}`);
+    const response = await window.fetch(`http://127.0.0.1:8000/users?email=${email}`);
     const userData = await response.json();
 
     if (userData.email === email && userData.password === password) {

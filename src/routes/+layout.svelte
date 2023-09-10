@@ -16,7 +16,8 @@
 </script>
 
 <div class:dark>
-  <main class="bg-gray-200 dark:bg-gray-800">
+  <!-- <main class="bg-gray-200 dark:bg-gray-800 text-black dark:text-white text-center"> -->
+  <main class="defaultPage">
     <Nav bind:dark />
     <slot />
   </main>

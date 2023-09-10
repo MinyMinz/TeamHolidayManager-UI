@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { goto, invalidateAll } from "$app/navigation";
   import {
     createMode,
     deleteMode,
@@ -10,6 +11,21 @@
   import CreateModal from "./createModal.svelte";
   import DeleteModal from "./deleteModal.svelte";
   import EditModal from "./editModal.svelte";
+
+  $: if (!showModal) {
+    createMode.set(false);
+    editMode.set(false);
+    deleteMode.set(false);
+    // Check if the browser is running the code
+    if (typeof window !== "undefined") {
+      invalidateAll().then(() => {
+        // After invalidating, fetch the users again to get the updated list
+        fetchHolidayRequests().then((res) => {
+          holidayMap = res;
+        });
+      });
+    }
+  }
 
   onMount(async () => {
     //fetch the holidayRequests on page load and set the holidayMap
@@ -33,7 +49,6 @@
   }
 
   let columnNames = [
-    "id",
     "description",
     "start date",
     "end date",
@@ -53,7 +68,8 @@
       } else if (loggedInUser.role_name === "SuperAdmin") {
         url;
       } else {
-        throw new Error(`Failed to fetch data. Invalid Permisions.`);
+        goto("/login");
+        throw new Error(`Failed to fetch data. User not logged in.`);
       }
 
       const response = await fetch(url);
@@ -114,7 +130,7 @@
         >
           <p class="icons">
             Create Request
-            <Icon icon="mdi:account-plus" inline={true} />
+            <Icon icon="mdi:calendar-plus-outline" inline={true} />
           </p>
         </button>
       </caption>
@@ -143,7 +159,6 @@
         <tbody class="text-center">
           {#each holidayMap as item (item[0])}
             <tr class="text-lg text-black dark:text-gray-200">
-              <td>{item[1].id}</td>
               <td>{item[1].description}</td>
               <td>{item[1].start_date}</td>
               <td>{item[1].end_date}</td>
@@ -169,7 +184,7 @@
                 >
                   <p class="icons">
                     Edit
-                    <Icon icon="mdi:account-edit" inline={true} />
+                    <Icon icon="mdi:calendar-edit-outline" inline={true} />
                   </p>
                 </button>
                 <button
@@ -179,7 +194,7 @@
                 >
                   <p class="icons">
                     Delete
-                    <Icon icon="mdi:account-remove" inline={true} />
+                    <Icon icon="mdi:calendar-remove-outline" inline={true} />
                   </p>
                 </button>
               </td>

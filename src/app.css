@@ -11,8 +11,14 @@
         w-full py-2 px-3 rounded-sm;
   }
 
+  .defaultPage {
+    @apply bg-gray-300 dark:bg-gray-800
+     text-black dark:text-white 
+        justify-center;
+  }
+
   .page {
-    @apply bg-gray-200 dark:bg-gray-800
+    @apply bg-gray-300 dark:bg-gray-800
      text-black dark:text-white 
         min-h-screen 
         flex flex-col 
@@ -26,12 +32,22 @@
         justify-normal;
   }
 
+  .loginButton {
+    @apply mr-3 px-4 py-2 
+    text-sm font-medium 
+    tracking-wide 
+    text-black dark:text-white capitalize 
+    transition-colors duration-200 
+    transform 
+    bg-blue-400 rounded-md hover:bg-blue-500 focus:outline-none focus:bg-blue-500;
+  }
+
   .editButton {
     @apply bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl  w-20 px-6 mr-2 mb-2;
   }
 
   .deleteButton {
-    @apply bg-gradient-to-r from-red-400 to-red-700 hover:bg-gradient-to-bl  text-center w-20 px-6 mr-2 mb-2 ;
+    @apply bg-gradient-to-r from-red-400 to-red-700 hover:bg-gradient-to-bl  text-center w-20 px-6 mr-2 mb-2;
   }
 
   .createButton {
@@ -52,6 +68,4 @@
   .icons {
     @apply flex flex-col items-center text-xl text-white;
   }
-
-
 }

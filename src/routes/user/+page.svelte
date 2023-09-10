@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { goto, invalidateAll } from "$app/navigation";
   import {
     createMode,
     deleteMode,
@@ -11,16 +12,20 @@
   import DeleteModal from "./deleteModal.svelte";
   import EditModal from "./editModal.svelte";
 
-  onMount(async () => {
-    //fetch the users on page load and set the userMap
-    fetchUsers().then((res) => {
-      userMap = res;
-    });
-  });
-
-  let showModal: boolean = false;
-  let currentUserData: User;
-  let userMap = new Map();
+  $: if (!showModal) {
+    createMode.set(false);
+    editMode.set(false);
+    deleteMode.set(false);
+    //check if the browser is running the code
+    if (typeof window !== "undefined") {
+      invalidateAll().then(() => {
+        // After invalidating, fetch the users again to get the updated list
+        fetchUsers().then((res) => {
+          userMap = res;
+        });
+      });
+    }
+  }
 
   const loggedInUser: any = {};
   if (typeof sessionStorage !== "undefined") {
@@ -32,7 +37,18 @@
     }
   }
 
-  let columnNames = ["id", "Full name", "email", "password", "Team", "Role"];
+  onMount(async () => {
+    //fetch the users on page load and set the userMap
+    fetchUsers().then((res) => {
+      userMap = res;
+    });
+  });
+
+  let showModal: boolean = false;
+  let currentUserData: User;
+  let userMap = new Map();
+
+  let columnNames = ["Full name", "email", "password", "Team", "Role"];
 
   async function fetchUsers() {
     try {
@@ -44,7 +60,8 @@
       } else if (loggedInUser.role_name === "SuperAdmin") {
         url;
       } else {
-        throw new Error(`Failed to fetch data. Invalid Permisions.`);
+        goto("/login");
+        throw new Error(`Failed to fetch data. User not logged in.`);
       }
 
       const response = await fetch(url);
@@ -119,7 +136,7 @@
         </div>
       {:else}
         <thead
-          class="text-center text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-white"
+          class="text-center text-gray-700 uppercase bg-gray-400 dark:bg-gray-700 dark:text-white"
         >
           <tr>
             {#each columnNames as column}
@@ -133,10 +150,9 @@
         <tbody class="text-center">
           {#each userMap as item (item[0])}
             <tr class="text-lg text-black dark:text-gray-200">
-              <td>{item[1].id}</td>
               <td>{item[1].full_name}</td>
               <td>{item[1].email}</td>
-              <td>{item[1].password}</td>
+              <td>{'*'.repeat(item[1].password.length)}</td> <!-- This is to replace password with * (display only)-->
               <td>{item[1].team_name}</td>
               <td>{item[1].role_name}</td>
               <td>
@@ -150,7 +166,7 @@
                     <Icon icon="mdi:account-edit" inline={true} />
                   </p>
                 </button>
-                {#if loggedInUser?.role_name != "Admin" || loggedInUser?.role_name != "SuperAdmin"}
+                {#if loggedInUser?.role_name !== "User"}
                   <button
                     type="button"
                     class="deleteButton"
