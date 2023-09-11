@@ -126,9 +126,9 @@
 </script>
 
 <Modal bind:showModal>
-  <h1 class="text-black dark:text-white" slot="header">Creating user</h1>
+  <h1 class="text-black dark:text-white" slot="header">Creating New User</h1>
   <form class="text-black dark:text-white">
-    <label for="fullname">*Fullname:</label><br />
+    <label for="fullname">*Full Name:</label><br />
     <input class="form-input" type="text" id="full_name" name="fullname" /><br
     />
     <label for="email">*Email:</label><br />

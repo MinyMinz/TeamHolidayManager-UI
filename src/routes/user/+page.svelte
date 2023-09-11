@@ -111,10 +111,10 @@
         class="p-5 font-semibold text-left text-gray-900 dark:text-white relative"
       >
         <h1 class="text-2xl">User Management</h1>
+        {#if loggedInUser?.role_name !== "User"}
         <p class="mt-1 text-lg font-normal text-gray-500 dark:text-gray-400">
           Here you can create, edit or delete users.
         </p>
-        {#if loggedInUser?.role_name !== "User"}
           <button
             type="button"
             class="createButton absolute bottom-2 right-24"
@@ -125,6 +125,10 @@
               <Icon icon="mdi:account-plus" inline={true} />
             </p>
           </button>
+        {:else}
+        <p class="mt-1 text-lg font-normal text-gray-500 dark:text-gray-400">
+          Here you can edit your accounts name, email and password.
+        </p>
         {/if}
       </caption>
       {#if userMap.size === 0}

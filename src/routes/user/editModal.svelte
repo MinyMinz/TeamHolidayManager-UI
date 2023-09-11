@@ -111,10 +111,10 @@
 </script>
 
 <Modal bind:showModal>
-  <h2 class="text-black dark:text-white" slot="header">Editing user</h2>
+  <h2 class="text-black dark:text-white" slot="header">Updating Existing User</h2>
 
   <form class="text-black dark:text-white">
-    <label for="fullname">*Fullname:</label><br />
+    <label for="fullname">*Full Name:</label><br />
     <input
       class="form-input"
       type="text"

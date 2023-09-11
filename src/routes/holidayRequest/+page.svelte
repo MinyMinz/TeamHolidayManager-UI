@@ -49,13 +49,13 @@
   }
 
   let columnNames = [
-    "description",
-    "start date",
-    "end date",
+    "Description",
+    "Start Date",
+    "End Date",
     "Time Of Day",
     "Team",
     "Name",
-    "approved",
+    "Status",
   ];
 
   async function fetchHolidayRequests() {

@@ -51,7 +51,7 @@
 
 <Modal bind:showModal>
   <h2 class="text-black dark:text-white" slot="header">
-    Please confirm you wish to delete {holidayData.full_name} from the system.
+    Please confirm you wish to delete this Holiday from the system.
   </h2>
   {#if msg}
     <p class="font-bold text-red-600 dark:text-red-400 text-center">{msg}</p>

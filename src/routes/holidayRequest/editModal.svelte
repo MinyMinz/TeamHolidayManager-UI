@@ -143,7 +143,7 @@
           value={holidayData.full_name}
           disabled={false}
         /><br />
-        <label for="approved">Approve:</label><br />
+        <label for="approved">Status:</label><br />
         <select class="selectorDropdown" bind:value={isApproved}>
           <option value={null}>N/A</option>
           <option value={true}>Approve</option>
