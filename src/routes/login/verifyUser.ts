@@ -1,14 +1,21 @@
 import { goto } from "$app/navigation";
-import { authMessage, isLoggedIn} from "$lib/components/stores/stores"; // get global user state
+import { authMessage, isLoggedIn } from "$lib/components/stores/stores"; // get global user state
 
 export async function verifyCredentials(email: string, password: string) {
   try {
-    const response = await window.fetch(`http://127.0.0.1:8000/users?email=${email}`);
-    const userData = await response.json();
+    const response = await window.fetch(`http://127.0.0.1:8000/users/login`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({email, password}),
+    });
+    const userResponse = await response.json();
 
-    if (userData.email === email && userData.password === password) {
+    if (userResponse.email === email && userResponse.password === password) {
       authMessage.set(null); // Clear any previous error messages
-      const { id, email, full_name, team_name, role_name } = userData;
+      const { id, email, full_name, team_name, role_name } = userResponse;
       isLoggedIn.set(true); // Set global user state
       window.sessionStorage.setItem(
         "userLoggedIn",
