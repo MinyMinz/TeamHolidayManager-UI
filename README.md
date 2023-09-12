@@ -1,6 +1,22 @@
 # Front-end to Team Holiday Manager
 
-This is the front-end to the Team Holiday Manager application. It is built using Svelte with typescript and tailwind-css.
+This is the front-end to the Team Holiday Manager application. It enables users to view and manage their holiday requests.
+In addition to the core functionality, it also allows users to manage their profile and view their holiday history.
+With the exception of the Teams page, all pages are protected by authentication allowing only SuperAdmins to create teams.
+
+The application is deployed via Vercel and can be accessed at the following link:
+[Live Demo](https://team-holiday-manager-ui.vercel.app/)
+
+![Screenshot of Home page](static/image.png)
+
+![Alt text]()
+
+## Technologies Used
+
+- Svelte
+- Typescript
+- Tailwind CSS
+- Vercel
 
 ## Getting Started
 
@@ -23,37 +39,13 @@ This will start the application on port 5173. You can then access the applicatio
 
 ## Running the application with the back-end in docker
 
-To run the application with the back-end in Docker, you will need to run the back-end in Docker. 
+To run the application with the back-end in Docker, you will need to run the back-end in Docker.
 Instructions for doing this can be found in the [TeamHolidayManager](https://github.com/MinyMinz/TeamHolidayManager) repository.
 
 Once the back-end is running, you can run the front-end with the following command:
 
 ```bash
-npm run dev 
+npm run dev
 ```
 
 This will start the application on port 5173. You can then access the application at http://localhost:5173/.
-
-
-## Below is for development purposes only
-
-To start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy the app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
