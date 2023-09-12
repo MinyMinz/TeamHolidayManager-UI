@@ -1,6 +1,7 @@
 <script lang="ts">
+  import { PUBLIC_URI } from "$env/static/public";
   import Modal from "$lib/components/modal/GlobalModal.svelte";
-  import { deleteMode, isLoggedIn } from "$lib/components/stores/stores";
+  import { deleteMode } from "$lib/components/stores/stores";
 
   export let showModal = false;
   export let user: any;
@@ -32,7 +33,7 @@
 
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/users?user_id=` + user.id,
+        `${PUBLIC_URI}/users?user_id=` + user.id,
         { method: "DELETE" }
       );
 

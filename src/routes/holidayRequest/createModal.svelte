@@ -1,6 +1,8 @@
 <script lang="ts">
+  import { PUBLIC_URI } from '$env/static/public';
   import Modal from "$lib/components/modal/GlobalModal.svelte";
   import { createMode } from "$lib/components/stores/stores";
+
 
   const loggedInUser: any = {};
   if (typeof sessionStorage !== "undefined") {
@@ -33,7 +35,7 @@
       inputList.user_id = loggedInUser?.id;
       inputList.team_name = loggedInUser?.team_name;
       inputList.approved = null;
-      const response = await fetch(`http://127.0.0.1:8000/holiday-request`, {
+      const response = await fetch(`${PUBLIC_URI}/holiday-request`, {
         method: "POST",
         headers: {
           Accept: "application/json",

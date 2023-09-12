@@ -1,6 +1,8 @@
 <script lang="ts">
+  import { PUBLIC_URI } from '$env/static/public';
   import Modal from "$lib/components/modal/GlobalModal.svelte";
   import { deleteMode } from "$lib/components/stores/stores";
+
 
   export let showModal = false;
   export let holidayData: any;
@@ -31,7 +33,7 @@
     }
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/holiday-request?holiday_id=` + holidayData.id,
+        `${PUBLIC_URI}/holiday-request?holiday_id=` + holidayData.id,
         { method: "DELETE" }
       );
 

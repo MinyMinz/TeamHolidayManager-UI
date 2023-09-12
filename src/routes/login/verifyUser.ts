@@ -1,9 +1,10 @@
 import { goto } from "$app/navigation";
 import { authMessage, isLoggedIn } from "$lib/components/stores/stores"; // get global user state
+import { PUBLIC_URI } from '$env/static/public'
 
 export async function verifyCredentials(email: string, password: string) {
   try {
-    const response = await window.fetch(`http://127.0.0.1:8000/users/login`, {
+    const response = await window.fetch(`${PUBLIC_URI}/users/login`, {
       method: "POST",
       headers: {
         Accept: "application/json",

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { goto, invalidateAll } from "$app/navigation";
+  import { PUBLIC_URI } from '$env/static/public';
   import {
     createMode,
     deleteMode,
@@ -60,7 +61,7 @@
 
   async function fetchHolidayRequests() {
     try {
-      let url = `http://127.0.0.1:8000/holiday-request`;
+      let url = `${PUBLIC_URI}/holiday-request`;
       if (loggedInUser?.role_name === "User") {
         url += `?user_id=${loggedInUser.id}`;
       } else if (loggedInUser.role_name === "Admin") {

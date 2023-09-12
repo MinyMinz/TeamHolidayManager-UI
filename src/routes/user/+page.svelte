@@ -1,5 +1,6 @@
 <script lang="ts">
   import { goto, invalidateAll } from "$app/navigation";
+  import { PUBLIC_URI } from '$env/static/public';
   import {
     createMode,
     deleteMode,
@@ -52,7 +53,7 @@
 
   async function fetchUsers() {
     try {
-      let url = `http://127.0.0.1:8000/users`;
+      let url = `${PUBLIC_URI}/users`;
       if (loggedInUser?.role_name === "User") {
         url += `?user_id=${loggedInUser.id}`;
       } else if (loggedInUser.role_name === "Admin") {

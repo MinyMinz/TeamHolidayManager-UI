@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { PUBLIC_URI } from "$env/static/public";
   import Modal from "$lib/components/modal/GlobalModal.svelte";
   import { editMode } from "$lib/components/stores/stores";
   import type { UserWithPassword } from "$lib/components/types/customTypes";
@@ -33,7 +34,7 @@
   }
 
   async function fetchTeams() {
-    let url = "http://127.0.0.1:8000/teams";
+    let url = `${PUBLIC_URI}/teams`;
     //if the logged in user is an admin, only get team_name of the admin
     if (loggedInUser?.role_name === "Admin") {
       url += `?team_name=${loggedInUser.team_name}`;
@@ -44,7 +45,7 @@
   }
 
   async function fetchRoles() {
-    let url = "http://127.0.0.1:8000/roles";
+    let url = `${PUBLIC_URI}/roles`;
     //if the logged in user is an admin, only get role_name of User
     if (loggedInUser?.role_name === "Admin") {
       url += `?role_name=User`;
@@ -82,7 +83,7 @@
       });
       inputList.team_name = selectedTeam;
       inputList.role_name = selectedRole;
-      const response = await window.fetch(`http://127.0.0.1:8000/users`, {
+      const response = await window.fetch(`${PUBLIC_URI}/users`, {
         method: "PUT",
         headers: {
           Accept: "application/json",

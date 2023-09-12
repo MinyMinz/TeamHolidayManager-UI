@@ -1,5 +1,6 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
+  import { PUBLIC_URI } from "$env/static/public";
   import Modal from "$lib/components/modal/GlobalModal.svelte";
   import { createMode } from "$lib/components/stores/stores";
 
@@ -34,7 +35,7 @@
   }
 
   async function fetchTeams() {
-    let url = "http://127.0.0.1:8000/teams";
+    let url = `${PUBLIC_URI}/teams`;
     //if the logged in user is an admin, only get team_name of the admin
     if (loggedInUser?.role_name === "Admin") {
       url += `?team_name=${loggedInUser.team_name}`;
@@ -45,7 +46,7 @@
   }
 
   async function fetchRoles() {
-    let url = "http://127.0.0.1:8000/roles";
+    let url = `${PUBLIC_URI}/roles`;
     //if the logged in user is an admin, only get role_name of User
     if (loggedInUser?.role_name === "Admin") {
       url += `?role_name=User`;
@@ -78,7 +79,7 @@
         }
       }
 
-      const response = await window.fetch(`http://127.0.0.1:8000/users`, {
+      const response = await window.fetch(`${PUBLIC_URI}/users`, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -134,12 +135,7 @@
     <label for="email">*Email:</label><br />
     <input class="form-input" type="email" id="email" name="email" /><br />
     <label for="password">*Password:</label><br />
-    <input
-      class="form-input"
-      type="text"
-      id="password"
-      name="password"
-    /><br />
+    <input class="form-input" type="text" id="password" name="password" /><br />
     {#if loggedInUser?.role_name === "User" || loggedInUser?.role_name === "Admin"}
       <label for="teamName">*Team Name:</label><br />
       <input

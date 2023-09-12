@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { PUBLIC_URI } from "$env/static/public";
   import Modal from "$lib/components/modal/GlobalModal.svelte";
   import { editMode } from "$lib/components/stores/stores";
   import type { Holiday } from "$lib/components/types/customTypes";
@@ -24,8 +25,13 @@
       msg = "You cannot edit and approved holiday";
       return;
     }
-    if (loggedInUser.role_name === "Admin" && loggedInUser.id === holidayData.user_id && isApproved !== holidayData.approved) {
-      msg = "You do cannot edit the approved field of your own holiday request.";
+    if (
+      loggedInUser.role_name === "Admin" &&
+      loggedInUser.id === holidayData.user_id &&
+      isApproved !== holidayData.approved
+    ) {
+      msg =
+        "You do cannot edit the approved field of your own holiday request.";
       return;
     }
     try {
@@ -54,7 +60,7 @@
       if (loggedInUser?.role_name !== "User") {
         inputList.approved = isApproved;
       }
-      const response = await fetch(`http://127.0.0.1:8000/holiday-request`, {
+      const response = await fetch(`${PUBLIC_URI}/holiday-request`, {
         method: "PUT",
         headers: {
           Accept: "application/json",
