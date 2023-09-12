@@ -1,8 +1,7 @@
 <script>
-  import Loginlogoutbutton from "$lib/components/navbar/loginlogoutbutton.svelte";
-  import { isLoggedIn } from "$lib/components/stores/stores";
-  import Icon from "@iconify/svelte";
+  import Nav from "$lib/components/navbar/nav.svelte";
   import "../app.css";
+  import { isLoggedIn } from "$lib/components/stores/stores";
 
   let loggedIn = false;
 
@@ -19,60 +18,7 @@
 <div class:dark>
   <!-- <main class="bg-gray-200 dark:bg-gray-800 text-black dark:text-white text-center"> -->
   <main class="defaultPage">
-    <nav
-      class="bg-gray-400 dark:bg-slate-900 h-12 md:flex md:justify-between md:items-center sticky top-0 z-50"
-    >
-      <div class="flex items-center justify-between">
-        <a
-          class="ml-1 text-xl font-bold text-gray-800 hover:text-blue-500 dark:text-white md:text-2xl dark:hover:text-blue-300"
-          href="/">Phoebus Software</a
-        >
-      </div>
-
-      <div
-        class="flex-col mt-8 space-y-4 md:flex md:space-y-0 md:flex-row md:items-center md:space-x-8 md:mt-0"
-      >
-        {#if $isLoggedIn}
-          <a
-            class="text-gray-800 hover:text-blue-500 dark:text-white dark:hover:text-blue-300"
-            href="/holidayRequest"
-          >
-            HolidayRequests</a
-          >
-          <a
-            class="text-gray-800 hover:text-blue-500 dark:text-white dark:hover:text-blue-300"
-            href="/user"
-          >
-            User Management</a
-          >
-        {/if}
-      </div>
-      <div class="flex text-gray-800 dark:text-white">
-        <button
-          class="mx-2 float-left"
-          on:click|preventDefault={() => {
-            dark = !dark;
-          }}
-        >
-          {#if dark}
-            <Icon
-              inline
-              icon="line-md:sunny-outline-to-moon-loop-transition"
-              style="width: 30px; height: 30px;"
-            />
-          {/if}
-          {#if !dark}
-            <Icon
-              inline
-              icon="line-md:moon-to-sunny-outline-loop-transition"
-              style="width: 30px; height: 30px"
-            />
-          {/if}
-        </button>
-        <Loginlogoutbutton />
-      </div>
-    </nav>
-
+    <Nav bind:dark />
     <slot />
   </main>
 </div>
