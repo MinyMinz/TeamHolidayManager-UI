@@ -1,7 +1,7 @@
 <script lang="ts">
-  import Loginlogoutbutton from "./loginlogoutbutton.svelte";
-  import Icon from "@iconify/svelte";
   import { isLoggedIn } from "$lib/components/stores/stores";
+  import Icon from "@iconify/svelte";
+  import Loginlogoutbutton from "./loginlogoutbutton.svelte";
 
   export let dark = true;
 </script>
