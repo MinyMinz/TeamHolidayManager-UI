@@ -1,8 +1,8 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { PUBLIC_URI } from "$env/static/public";
-  import Modal from "$lib/components/modal/globalModal.svelte";
-  import { createMode } from "$lib/components/stores/stores";
+  import Modal from "$lib/modal/globalModal.svelte";
+  import { createMode } from "$lib/stores/stores";
 
   const loggedInUser: any = {};
   if (typeof sessionStorage !== "undefined") {

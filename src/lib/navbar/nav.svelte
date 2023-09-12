@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { isLoggedIn } from "$lib/components/stores/stores";
+  import { isLoggedIn } from "$lib/stores/stores";
   import Icon from "@iconify/svelte";
   import Loginlogoutbutton from "./loginlogoutbutton.svelte";
 

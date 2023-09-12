@@ -1,7 +1,7 @@
 <script>
-  import Nav from "$lib/components/navbar/nav.svelte";
+  import Nav from "$lib/navbar/nav.svelte";
   import "../app.css";
-  import { isLoggedIn } from "$lib/components/stores/stores";
+  import { isLoggedIn } from "$lib/stores/stores";
 
   let loggedIn = false;
 

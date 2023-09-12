@@ -1,6 +1,6 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
-  import { isLoggedIn } from "$lib/components/stores/stores";
+  import { isLoggedIn } from "$lib/stores/stores";
 
 
   function handleLogout() {

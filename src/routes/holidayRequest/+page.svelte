@@ -5,8 +5,8 @@
     createMode,
     deleteMode,
     editMode,
-  } from "$lib/components/stores/stores";
-  import type { Holiday } from "$lib/components/types/customTypes";
+  } from "$lib/stores/stores";
+  import type { Holiday } from "$lib/types/customTypes";
   import Icon from "@iconify/svelte";
   import { onMount } from "svelte";
   import CreateModal from "./createModal.svelte";

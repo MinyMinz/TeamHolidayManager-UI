@@ -1,8 +1,8 @@
 <script lang="ts">
   import { PUBLIC_URI } from "$env/static/public";
-  import Modal from "$lib/components/modal/globalModal.svelte";
-  import { editMode } from "$lib/components/stores/stores";
-  import type { Holiday } from "$lib/components/types/customTypes";
+  import Modal from "$lib/modal/globalModal.svelte";
+  import { editMode } from "$lib/stores/stores";
+  import type { Holiday } from "$lib/types/customTypes";
 
   export let showModal = false;
   export let holidayData: Holiday;

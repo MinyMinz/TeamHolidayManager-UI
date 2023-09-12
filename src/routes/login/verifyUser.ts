@@ -1,5 +1,5 @@
 import { goto } from "$app/navigation";
-import { authMessage, isLoggedIn } from "$lib/components/stores/stores"; // get global user state
+import { authMessage, isLoggedIn } from "$lib/stores/stores"; // get global user state
 import { PUBLIC_URI } from '$env/static/public'
 
 export async function verifyCredentials(email: string, password: string) {

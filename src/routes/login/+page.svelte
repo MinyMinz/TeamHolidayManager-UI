@@ -1,5 +1,5 @@
 <script>
-  import { authMessage } from "../../lib/components/stores/stores"; // get authMessage from user store
+  import { authMessage } from "$lib/stores/stores"; // get authMessage from user store
   import { verifyCredentials } from "./verifyUser";
   import Icon from "@iconify/svelte";
 
