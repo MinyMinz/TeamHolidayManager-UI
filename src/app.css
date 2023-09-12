@@ -5,6 +5,9 @@
 @tailwind utilities;
 
 @layer components {
+  .navbarItems {
+    @apply text-gray-800 hover:text-blue-500 dark:text-white dark:hover:text-blue-300;
+  }
 
   .defaultPage {
     @apply bg-gray-300 dark:bg-gray-800

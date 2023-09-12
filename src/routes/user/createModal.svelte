@@ -192,7 +192,7 @@
   <br />
   <div class="flex flex-col">
     <button class="createOrUpdateSubmitButton" on:click={() => createUser()}
-      >Create</button
+      >Create User</button
     >
   </div>
 </Modal>

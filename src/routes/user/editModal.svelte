@@ -196,7 +196,7 @@
 
   <div class="flex flex-col">
     <button class="createOrUpdateSubmitButton" on:click={() => updateUser()}
-      >Update</button
+      >Update User</button
     >
   </div>
 </Modal>

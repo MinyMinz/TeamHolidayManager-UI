@@ -4,6 +4,16 @@
   import Loginlogoutbutton from "./loginlogoutbutton.svelte";
 
   export let dark = true;
+
+  const loggedInUser: any = {};
+  if (typeof sessionStorage !== "undefined") {
+    const userLoggedIn = sessionStorage.getItem("userLoggedIn");
+    if (userLoggedIn !== null) {
+      for (const [key, value] of Object.entries(JSON.parse(userLoggedIn))) {
+        loggedInUser[key] = value;
+      }
+    }
+  }
 </script>
 
 <nav
@@ -20,18 +30,11 @@
     class="flex-col mt-8 space-y-4 md:flex md:space-y-0 md:flex-row md:items-center md:space-x-8 md:mt-0"
   >
     {#if $isLoggedIn}
-      <a
-        class="text-gray-800 hover:text-blue-500 dark:text-white dark:hover:text-blue-300"
-        href="/holidayRequest"
-      >
-        HolidayRequests</a
-      >
-      <a
-        class="text-gray-800 hover:text-blue-500 dark:text-white dark:hover:text-blue-300"
-        href="/user"
-      >
-        User Management</a
-      >
+      <a class="navbarItems" href="/holidayRequest"> Holiday Requests</a>
+      <a class="navbarItems" href="/user"> User Management</a>
+      {#if $loggedInUser.role_name === "SuperAdmin"}
+        <a class="navbarItems" href="/team"> Team Management</a>
+      {/if}
     {/if}
   </div>
   <div class="flex text-gray-800 dark:text-white">
