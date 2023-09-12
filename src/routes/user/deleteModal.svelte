@@ -1,6 +1,6 @@
 <script lang="ts">
   import { PUBLIC_URI } from "$env/static/public";
-  import Modal from "$lib/components/modal/GlobalModal.svelte";
+  import Modal from "$lib/components/modal/globalModal.svelte";
   import { deleteMode } from "$lib/components/stores/stores";
 
   export let showModal = false;
