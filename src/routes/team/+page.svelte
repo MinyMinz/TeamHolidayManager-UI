@@ -2,7 +2,6 @@
   import { goto, invalidateAll } from "$app/navigation";
   import { PUBLIC_URI } from "$env/static/public";
   import { createMode, deleteMode, editMode } from "$lib/stores/stores";
-  import type { User } from "$lib/types/customTypes";
   import Icon from "@iconify/svelte";
   import { onMount } from "svelte";
   import CreateModal from "./createModal.svelte";
@@ -42,7 +41,7 @@
 
   let showModal: boolean = false;
   let teamMap = new Map();
-  let teamData = { name: "", description: "" };
+  let teamName: string;
 
   let columnNames = ["Team Name", "Description"];
 
@@ -83,7 +82,7 @@
   function setDeleteMode(teamData: any) {
     showModal = true;
     $deleteMode = true;
-    teamData = teamData;
+    teamName = teamData.name;
   }
 </script>
 
@@ -169,5 +168,5 @@
 {/if}
 
 {#if $deleteMode}
-  <DeleteModal {teamData} bind:showModal />
+  <DeleteModal bind:teamName bind:showModal />
 {/if}

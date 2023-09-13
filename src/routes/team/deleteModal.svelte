@@ -15,7 +15,7 @@
   }
 
   export let showModal = false;
-  export let teamData = { name: "", description: "" };
+  export let teamName: any;
   let msg = "";
 
   async function deleteTeam() {
@@ -29,7 +29,7 @@
 
     try {
       const response = await fetch(
-        `${PUBLIC_URI}/teams?team_name=` + teamData.name,
+        `${PUBLIC_URI}/teams?team_name=${teamName}`,
         {
           method: "DELETE",
         }
@@ -53,7 +53,7 @@
 
 <Modal bind:showModal>
   <h2 class="text-black dark:text-white" slot="header">
-    Please confirm you wish to delete {teamData.name} from the system.
+    Please confirm you wish to delete {teamName} from the system.
   </h2>
   {#if msg}
     <p class="font-bold text-red-600 dark:text-red-400 text-center">{msg}</p>
