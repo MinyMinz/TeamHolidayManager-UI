@@ -148,7 +148,7 @@
                   on:click={() => setDeleteMode(item[1])}
                 >
                   <p class="icons">
-                    Delete Team
+                    Delete
                     <Icon
                       icon="fluent:people-team-delete-24-regular"
                       inline={true}
