@@ -71,7 +71,7 @@
     <input
       class="form-input"
       type="text"
-      id="team_name"
+      id="name"
       name="teamname"
       required={true}
     /><br />
