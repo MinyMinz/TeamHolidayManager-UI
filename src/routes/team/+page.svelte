@@ -42,13 +42,13 @@
 
   let showModal: boolean = false;
   let teamMap = new Map();
-  let teamData= {"name": "", "description": ""};
+  let teamData = { name: "", description: "" };
 
   let columnNames = ["Team Name", "Description"];
 
   async function fetchTeams() {
     try {
-       if (loggedInUser.role_name !== "SuperAdmin") {
+      if (loggedInUser.role_name !== "SuperAdmin") {
         goto("/");
         throw new Error(`Unauthorized access. Status: 401`);
       }
@@ -104,8 +104,8 @@
             on:click={() => setCreateMode()}
           >
             <p class="icons">
-              Create User
-              <Icon icon="mdi:account-plus" inline={true} />
+              Create Team
+              <Icon icon="fluent:people-team-add-24-regular" inline={true} />
             </p>
           </button>
         {:else}
@@ -148,8 +148,11 @@
                   on:click={() => setDeleteMode(item[1])}
                 >
                   <p class="icons">
-                    Delete
-                    <Icon icon="mdi:account-remove" inline={true} />
+                    Delete Team
+                    <Icon
+                      icon="fluent:people-team-delete-24-regular"
+                      inline={true}
+                    />
                   </p>
                 </button>
               </td>
@@ -166,5 +169,5 @@
 {/if}
 
 {#if $deleteMode}
-  <DeleteModal teamData={teamData} bind:showModal />
+  <DeleteModal {teamData} bind:showModal />
 {/if}

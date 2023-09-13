@@ -40,6 +40,8 @@
       if (response.ok) {
         showModal = false;
         $deleteMode = false;
+        msg = "";
+        return;
       } else {
         msg = `Status: ${response.status} Detail: ${response.statusText}`;
         throw new Error(`Failed to send data. Status: ${response.status}`);

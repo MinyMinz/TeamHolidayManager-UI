@@ -102,6 +102,7 @@
         showModal = false;
         $editMode = false;
         msg = "";
+        return;
       }
       console.log(msg);
     } catch (err) {

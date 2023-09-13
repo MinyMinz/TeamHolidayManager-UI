@@ -56,6 +56,7 @@
         showModal = false;
         $createMode = false;
         msg = "";
+        return;
       }
     } catch (err) {
       console.error(err);
@@ -65,7 +66,7 @@
 </script>
 
 <Modal bind:showModal>
-  <h1 class="text-black dark:text-white" slot="header">Creating New User</h1>
+  <h1 class="text-black dark:text-white" slot="header">Creating New Team</h1>
   <form class="text-black dark:text-white">
     <label for="teamname">*Team Name:</label><br />
     <input

@@ -98,6 +98,7 @@
         showModal = false;
         $createMode = false;
         msg = "";
+        return;
       }
     } catch (err) {
       console.error(err);
