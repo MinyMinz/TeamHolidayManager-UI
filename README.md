@@ -9,7 +9,6 @@ The application is deployed via Vercel and can be accessed at the following link
 
 ![Screenshot of Home page](static/image.png)
 
-
 ## Technologies Used
 
 - Svelte

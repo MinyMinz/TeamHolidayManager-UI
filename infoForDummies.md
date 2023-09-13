@@ -27,7 +27,7 @@ You can preview the production build with `npm run preview`.
 
 ## Deploying to the web
 
-Deployed via Vercel.
+Deployed via Vercel. See below for link:
 https://vercel.com/minhazrahmanbaltic-gmailcom/team-holiday-manager-ui
 
 # Below is no longer relevant but have left for reference

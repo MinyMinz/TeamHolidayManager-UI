@@ -32,7 +32,7 @@
     {#if $isLoggedIn}
       <a class="navbarItems" href="/holidayRequest"> Holiday Requests</a>
       <a class="navbarItems" href="/user"> User Management</a>
-      {#if $loggedInUser.role_name === "SuperAdmin"}
+      {#if loggedInUser.role_name === "SuperAdmin"}
         <a class="navbarItems" href="/team"> Team Management</a>
       {/if}
     {/if}
