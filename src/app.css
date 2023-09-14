@@ -63,7 +63,7 @@
     @apply bg-gradient-to-r from-green-400 to-green-700 hover:bg-gradient-to-bl   w-auto h-auto py-3 px-4 rounded-lg mt-6 mb-1;
   }
 
-  .createOrUpdateSubmitButton {
+  .submitButton {
     @apply focus:outline-none text-white bg-green-700 hover:bg-green-800 rounded-lg font-medium text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700;
   }
 
@@ -77,4 +77,18 @@
   .icons {
     @apply flex flex-col items-center text-xl text-white;
   }
+
+  .messageClose{
+    @apply ml-auto -mx-1.5 -my-1.5 
+     bg-transparent text-green-500 rounded-lg p-1.5 hover:bg-green-200 
+     inline-flex items-center justify-center 
+     h-8 w-8 
+    dark:text-green-400 dark:hover:bg-green-700
+  }
+
+  .messageIcons{
+    @apply text-2xl text-white;
+  }
+
+
 }
