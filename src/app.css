@@ -12,7 +12,7 @@
   .defaultPage {
     @apply bg-gray-300 dark:bg-slate-800
      text-black dark:text-white
-        justify-center h-full;
+        justify-center min-h-screen;
   }
 
   .tablePage {

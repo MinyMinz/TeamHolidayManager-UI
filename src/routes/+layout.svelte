@@ -1,19 +1,12 @@
 <script>
   import Nav from "$lib/navbar/nav.svelte";
-  import { requestStatus, isLoggedIn } from "$lib/stores/stores";
+  import { requestStatus } from "$lib/stores/stores";
   import Icon from "@iconify/svelte";
   import "../app.css";
 
-  let loggedIn = false;
-  $isLoggedIn = loggedIn;
   let dark = true;
   let requestMessage = "";
 
-  if (typeof sessionStorage !== "undefined") {
-    if (sessionStorage.getItem("userLoggedIn") !== null) {
-      loggedIn = true;
-    }
-  }
 
   requestStatus.subscribe((value) => {
     if (value === null) {
@@ -34,15 +27,9 @@
         class="flex items-center p-3 mb-3 text-white rounded-lg bg-green-500 dark:bg-green-900"
       >
         <Icon class="messageIcons" icon="line-md:alert-circle" />
-        {#if loggedIn === true}
-          <div class="ml-3 text-lg font-bold">Logged In Successfully!</div>
-        {:else if loggedIn === false}
-          <div class="ml-3 text-lg font-bold">logged Out Successfully!</div>
-        {:else}
           <div class="ml-3 text-lg font-bold">
             {"Request " + requestMessage + "!"}
           </div>
-        {/if}
         <button
           type="button"
           class="messageSuccessClose"
