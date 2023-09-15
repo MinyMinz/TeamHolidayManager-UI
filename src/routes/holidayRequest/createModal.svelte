@@ -119,7 +119,6 @@
       <option value="PM">Afternoon</option>
     </select>
     <label for="fullname">*Fullname:</label><br />
-    {#if loggedInUser?.role_name === "User"}
       <input
         class="form-input"
         type="text"
@@ -128,16 +127,6 @@
         value={loggedInUser?.full_name}
         disabled={true}
       /><br />
-    {:else}
-      <input
-        class="form-input"
-        type="text"
-        id="full_name"
-        name="fullname"
-        value={loggedInUser?.full_name}
-        disabled={false}
-      /><br />
-    {/if}
     {#if msg}
       <br />
       <p class="text-red-500 font-bold">{msg}</p>

@@ -140,7 +140,6 @@
         <option value="PM">PM</option>
       </select>
       <label for="fullname">*Fullname:</label><br />
-      {#if loggedInUser?.role_name === "User"}
         <input
           class="form-input"
           type="text"
@@ -149,7 +148,7 @@
           value={holidayData.full_name}
           disabled={true}
         /><br />
-      {:else}
+      {#if loggedInUser?.role_name === "Admin" || loggedInUser?.role_name === "SuperAdmin"}
         <input
           class="form-input"
           type="text"
