@@ -1,11 +1,21 @@
 <script lang="ts">
   import { goto, invalidateAll } from "$app/navigation";
   import { PUBLIC_URI } from "$env/static/public";
-  import { createMode, deleteMode, editMode } from "$lib/stores/stores";
+  import {
+    createMode,
+    deleteMode,
+    editMode,
+    requestStatus,
+  } from "$lib/stores/stores";
   import Icon from "@iconify/svelte";
   import { onMount } from "svelte";
   import CreateModal from "./createModal.svelte";
   import DeleteModal from "./deleteModal.svelte";
+
+  let showModal: boolean = false;
+  let teamMap = new Map();
+  let teamName: string;
+  const loggedInUser: any = {};
 
   $: if (!showModal) {
     createMode.set(false);
@@ -22,7 +32,6 @@
     }
   }
 
-  const loggedInUser: any = {};
   if (typeof sessionStorage !== "undefined") {
     const userLoggedIn = sessionStorage.getItem("userLoggedIn");
     if (userLoggedIn !== null) {
@@ -33,44 +42,48 @@
   }
 
   onMount(async () => {
+    //check if authMessage is set
+    if ($requestStatus) {
+      //reset the authMessage
+      requestStatus.set(null);
+    }
     //fetch the users on page load and set the teamMap
     fetchTeams().then((res) => {
       teamMap = res;
     });
   });
 
-  let showModal: boolean = false;
-  let teamMap = new Map();
-  let teamName: string;
-
   let columnNames = ["Team Name", "Description"];
 
   async function fetchTeams() {
-    try {
-      if (loggedInUser.role_name !== "SuperAdmin") {
-        goto("/");
-        throw new Error(`Unauthorized access. Status: 401`);
-      }
+    checkIfAuthorized();
+    await fetch(`${PUBLIC_URI}/teams`)
+      .then((res) => {
+        if (res.status === 401) {
+          goto("/");
+          throw new Error(`Unauthorized access. Status: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then((res) => {
+        if (Array.isArray(res)) {
+          res.forEach((value, index) => teamMap.set(index, value));
+        } else {
+          teamMap.set(0, res);
+        }
+        return teamMap;
+      })
+      .catch((err) => {
+        console.error(err); // log the error
+        throw err; // rethrow the error to be caught by the caller
+      });
+    return teamMap;
+  }
 
-      const response = await fetch(`${PUBLIC_URI}/teams`);
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch data. Status: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      // //if the response is an array, map the array to the teamMap
-      if (Array.isArray(data)) {
-        data.forEach((value, index) => teamMap.set(index, value));
-      } else {
-        //if there is only one team, the response is not an array
-        teamMap.set(0, data);
-      }
-      return teamMap;
-    } catch (err) {
-      console.error(err);
-      throw err; // Re-throw the error to propagate it to the caller
+  function checkIfAuthorized() {
+    if (loggedInUser.role_name !== "SuperAdmin") {
+      goto("/");
+      throw new Error(`Unauthorized access. Status: 401`);
     }
   }
 

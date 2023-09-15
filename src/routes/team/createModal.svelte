@@ -2,9 +2,12 @@
   import { goto } from "$app/navigation";
   import { PUBLIC_URI } from "$env/static/public";
   import Modal from "$lib/modal/globalModal.svelte";
-  import { createMode } from "$lib/stores/stores";
+  import { createMode, requestStatus } from "$lib/stores/stores";
 
+  export let showModal = false;
+  let msg = "";
   const loggedInUser: any = {};
+
   if (typeof sessionStorage !== "undefined") {
     const userLoggedIn = sessionStorage.getItem("userLoggedIn");
     if (userLoggedIn !== null) {
@@ -14,53 +17,57 @@
     }
   }
 
-  export let showModal = false;
-  let msg = "";
-
   async function createTeam() {
-    if (!loggedInUser || loggedInUser.role_name !== "SuperAdmin") {
-      alert("You do not have permission to create teams.");
-      showModal = false;
-      $createMode = false;
-      goto("/");
-      throw new Error("Unauthorized user trying to create a team.");
-    }
-    try {
-      // Get all the input values
-      let inputs = document.querySelectorAll(
-        ".form-input"
-      ) as NodeListOf<HTMLInputElement>;
-      let inputList: any = {};
-      inputs.forEach((input) => {
-        inputList[input.id] = input.value;
-      });
-      // Fetch the data from the API based on the input values
-      const response = await window.fetch(`${PUBLIC_URI}/teams`, {
+    // Check if the user is logged in and is a super admin
+    validateIsSuperAdmin();
+    // Get all the input values
+    const inputList = getInputValues();
+    // Fetch the data from the API based on the input values
+    await window
+      .fetch(`${PUBLIC_URI}/teams`, {
         method: "POST",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
         body: JSON.stringify(inputList),
-      });
-
-      // If the response is not ok, throw an error with the status text
-      if (!response.ok) {
-        if (response.status === 422) {
+      })
+      .then((res) => {
+        // If the response is not ok, throw an error with the status text
+        if (!res.ok) {
           msg = "Please fill in all fields correctly!";
-        } else {
-          msg = `Status: ${response.status} `;
+          throw new Error(msg);
         }
-        throw new Error(msg);
-      } else {
         showModal = false;
         $createMode = false;
         msg = "";
+        requestStatus.set("success");
         return;
-      }
-    } catch (err) {
-      console.error(err);
-      throw err; // Re-throw the error to propagate it to the caller
+      })
+      .catch((err) => {
+        console.error(err);
+        throw err; // Re-throw the error to propagate it to the caller
+      });
+  }
+
+  function getInputValues() {
+    let inputs = document.querySelectorAll(
+      ".form-input"
+    ) as NodeListOf<HTMLInputElement>;
+    let inputList: any = {};
+    inputs.forEach((input) => {
+      inputList[input.id] = input.value;
+    });
+    return inputList;
+  }
+
+  function validateIsSuperAdmin() {
+    if (!loggedInUser || loggedInUser.role_name !== "SuperAdmin") {
+      alert("You do not have permission to create teams.");
+      showModal = false;
+      $createMode = false;
+      goto("/");
+      throw new Error("Unauthorized user trying to create a team.");
     }
   }
 </script>
@@ -90,7 +97,7 @@
   </form>
   <br />
   <div class="flex flex-col">
-    <button class="createOrUpdateSubmitButton" on:click={() => createTeam()}
+    <button class="submitButton" on:click={() => createTeam()}
       >Create Team</button
     >
   </div>
