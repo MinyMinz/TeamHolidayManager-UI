@@ -1,14 +1,19 @@
 <script lang="ts">
   import { PUBLIC_URI } from "$env/static/public";
   import Modal from "$lib/modal/globalModal.svelte";
-  import { editMode } from "$lib/stores/stores";
+  import { editMode, requestStatus } from "$lib/stores/stores";
   import type { UserWithPassword } from "$lib/types/customTypes";
 
   export let showModal = false;
   export let userData: UserWithPassword;
   let msg = "";
 
+  let teams: any = [];
+  let roles: any = [];
+  let selectedTeam = userData.team_name;
+  let selectedRole = userData.role_name;
   const loggedInUser: any = {};
+  
   if (typeof sessionStorage !== "undefined") {
     const userLoggedIn = sessionStorage.getItem("userLoggedIn");
     if (userLoggedIn !== null) {
@@ -17,11 +22,6 @@
       }
     }
   }
-
-  let teams: any = [];
-  let roles: any = [];
-  let selectedTeam = userData.team_name;
-  let selectedRole = userData.role_name;
 
   if (
     loggedInUser.role_name === "SuperAdmin" ||
@@ -33,15 +33,46 @@
     })();
   }
 
+  async function updateUser() {
+    validatePermissions();
+    const inputList = getInputValues();
+    await fetch(`${PUBLIC_URI}/users`, {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(inputList),
+    })
+      .then((res) => {
+        if (res.status === 422) {
+          msg = "Please fill in all fields correctly!";
+        } else if (res.status === 201) {
+          msg = "User created successfully!";
+          $editMode = false;
+          showModal = false;
+          requestStatus.set("success");
+        } else {
+          msg = "User creation failed!";
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        throw err; // Re-throw the error to propagate it to the caller
+      });
+  }
+
   async function fetchTeams() {
     let url = `${PUBLIC_URI}/teams`;
     //if the logged in user is an admin, only get team_name of the admin
     if (loggedInUser?.role_name === "Admin") {
       url += `?team_name=${loggedInUser.team_name}`;
     }
-    const teamResponse = await window.fetch(url);
-    const teamData = await teamResponse.json();
-    teams = teamData;
+    await fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        teams = data;
+      });
   }
 
   async function fetchRoles() {
@@ -50,12 +81,30 @@
     if (loggedInUser?.role_name === "Admin") {
       url += `?role_name=User`;
     }
-    const roleResponse = await window.fetch(url);
-    const roleData = await roleResponse.json();
-    roles = roleData;
+    await fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        roles = data;
+      });
   }
 
-  async function updateUser() {
+  function getInputValues() {
+    let inputs = document.querySelectorAll(
+      ".form-input"
+    ) as NodeListOf<HTMLInputElement>;
+    let inputList: any = {};
+    //add the id to the inputList first
+    inputList["id"] = userData.id;
+    //add the rest of the inputs to the inputList
+    inputs.forEach((input) => {
+      inputList[input.id] = input.value;
+    });
+    inputList.team_name = selectedTeam;
+    inputList.role_name = selectedRole;
+    return inputList;
+  }
+
+  function validatePermissions() {
     if (loggedInUser?.role_name == "User") {
       if (selectedTeam != loggedInUser?.team_name || selectedRole != "User") {
         msg = "You do not have permission to change your team or role.";
@@ -70,50 +119,13 @@
         }
       }
     }
-    try {
-      let inputs = document.querySelectorAll(
-        ".form-input"
-      ) as NodeListOf<HTMLInputElement>;
-      let inputList: any = {};
-      //add the id to the inputList first
-      inputList["id"] = userData.id;
-      //add the rest of the inputs to the inputList
-      inputs.forEach((input) => {
-        inputList[input.id] = input.value;
-      });
-      inputList.team_name = selectedTeam;
-      inputList.role_name = selectedRole;
-      const response = await window.fetch(`${PUBLIC_URI}/users`, {
-        method: "PUT",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(inputList),
-      });
-      if (!response.ok) {
-        if (response.status === 422) {
-          msg = "Please fill in all fields correctly!";
-        } else {
-          msg = `Status: ${response.status} `;
-        }
-        throw new Error(msg);
-      } else {
-        showModal = false;
-        $editMode = false;
-        msg = "";
-        return;
-      }
-      console.log(msg);
-    } catch (err) {
-      console.error(err);
-      throw err; // Re-throw the error to propagate it to the caller
-    }
   }
 </script>
 
 <Modal bind:showModal>
-  <h2 class="text-black dark:text-white" slot="header">Updating Existing User</h2>
+  <h2 class="text-black dark:text-white" slot="header">
+    Updating Existing User
+  </h2>
 
   <form class="text-black dark:text-white">
     <label for="fullname">*Full Name:</label><br />
@@ -196,7 +208,7 @@
   <br />
 
   <div class="flex flex-col">
-    <button class="createOrUpdateSubmitButton" on:click={() => updateUser()}
+    <button class="submitButton" on:click={() => updateUser()}
       >Update User</button
     >
   </div>

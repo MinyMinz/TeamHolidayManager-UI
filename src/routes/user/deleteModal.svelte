@@ -1,7 +1,7 @@
 <script lang="ts">
   import { PUBLIC_URI } from "$env/static/public";
   import Modal from "$lib/modal/globalModal.svelte";
-  import { deleteMode } from "$lib/stores/stores";
+  import { deleteMode, requestStatus } from "$lib/stores/stores";
 
   export let showModal = false;
   export let user: any;
@@ -18,44 +18,48 @@
   }
 
   async function deleteUser() {
-    if(loggedInUser.role_name === "User"){
-      msg = "You do not have permission to delete users."
+    validatePermissions();
+    await fetch(`${PUBLIC_URI}/users?user_id=` + user.id, { method: "DELETE" })
+      .then((res) => {
+        if (res.status === 422) {
+          msg = "Please fill in all fields correctly!";
+        } else if (res.status === 200) {
+          msg = "User deleted successfully!";
+          $deleteMode = false;
+          showModal = false;
+          requestStatus.set("success");
+        } else {
+          msg = "User deletion failed!";
+          throw new Error(msg + `Status: ${res.status}`);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        throw err; // Re-throw the error to propagate it to the caller
+      });
+  }
+
+  function validatePermissions() {
+    if (loggedInUser.role_name === "User") {
+      msg = "You do not have permission to delete users.";
       return;
-    }
-    else if(loggedInUser.role === "Admin" && user.role_name === "Admin"){
-      msg = "You cannot delete Admins."
-        return;
-    }
-    else if(loggedInUser.role === "SuperAdmin" && user.role_name === "SuperAdmin"){
-      msg = "You cannot delete SuperAdmin."
-        return;
-    }
-
-    try {
-      const response = await fetch(
-        `${PUBLIC_URI}/users?user_id=` + user.id,
-        { method: "DELETE" }
-      );
-
-      if (response.ok) {
-        showModal = false;
-        $deleteMode = false;
-        msg = "";
-        return;
-      } else {
-        msg = `Status: ${response.status} Detail: ${response.statusText}`;
-        throw new Error(`Failed to send data. Status: ${response.status}`);
-      }
-    } catch (err) {
-      console.error(err);
-      throw err; // Re-throw the error to propagate it to the caller
+    } else if (loggedInUser.role === "Admin" && user.role_name === "Admin") {
+      msg = "You cannot delete Admins.";
+      return;
+    } else if (
+      loggedInUser.role === "SuperAdmin" &&
+      user.role_name === "SuperAdmin"
+    ) {
+      msg = "You cannot delete SuperAdmin.";
+      return;
     }
   }
 </script>
 
 <Modal bind:showModal>
   <h2 class="text-black dark:text-white" slot="header">
-    Please confirm you wish to delete {user.full_name}'s account from the system.
+    Please confirm you wish to delete {user.full_name}'s account from the
+    system.
   </h2>
   {#if msg}
     <p class="font-bold text-red-600 dark:text-red-400 text-center">{msg}</p>

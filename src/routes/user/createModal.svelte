@@ -2,17 +2,7 @@
   import { goto } from "$app/navigation";
   import { PUBLIC_URI } from "$env/static/public";
   import Modal from "$lib/modal/globalModal.svelte";
-  import { createMode } from "$lib/stores/stores";
-
-  const loggedInUser: any = {};
-  if (typeof sessionStorage !== "undefined") {
-    const userLoggedIn = sessionStorage.getItem("userLoggedIn");
-    if (userLoggedIn !== null) {
-      for (const [key, value] of Object.entries(JSON.parse(userLoggedIn))) {
-        loggedInUser[key] = value;
-      }
-    }
-  }
+  import { createMode, requestStatus } from "$lib/stores/stores";
 
   export let showModal = false;
   let msg = "";
@@ -21,6 +11,16 @@
   let roles: any = [];
   let selectedTeam = "";
   let selectedRole = "";
+  const loggedInUser: any = {};
+  
+  if (typeof sessionStorage !== "undefined") {
+    const userLoggedIn = sessionStorage.getItem("userLoggedIn");
+    if (userLoggedIn !== null) {
+      for (const [key, value] of Object.entries(JSON.parse(userLoggedIn))) {
+        loggedInUser[key] = value;
+      }
+    }
+  }
 
   if (!loggedInUser) {
     goto("/");
@@ -34,15 +34,45 @@
     })();
   }
 
+  async function createUser() {
+    const inputList = getInputValues();
+    await fetch(`${PUBLIC_URI}/users`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(inputList),
+    })
+      .then((res) => {
+        if (res.status === 422) {
+          msg = "Please fill in all fields correctly!";
+        } else if (res.status === 201) {
+          msg = "User created successfully!";
+          $createMode = false;
+          showModal = false;
+          requestStatus.set("success");
+        } else {
+          msg = "User creation failed!";
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        throw err; // Re-throw the error to propagate it to the caller
+      });
+  }
+
   async function fetchTeams() {
     let url = `${PUBLIC_URI}/teams`;
     //if the logged in user is an admin, only get team_name of the admin
     if (loggedInUser?.role_name === "Admin") {
       url += `?team_name=${loggedInUser.team_name}`;
     }
-    const teamResponse = await window.fetch(url);
-    const teamData = await teamResponse.json();
-    teams = teamData;
+    await fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        teams = data;
+      });
   }
 
   async function fetchRoles() {
@@ -51,59 +81,35 @@
     if (loggedInUser?.role_name === "Admin") {
       url += `?role_name=User`;
     }
-    const roleResponse = await window.fetch(url);
-    const roleData = await roleResponse.json();
-    roles = roleData;
+    await fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        roles = data;
+      });
   }
 
-  async function createUser() {
-    try {
-      let inputs = document.querySelectorAll(
-        ".form-input"
-      ) as NodeListOf<HTMLInputElement>;
-      let inputList: any = {};
-      //add the id to the inputList first as Null for new user
-      inputList["id"] = null;
-      inputs.forEach((input) => {
-        inputList[input.id] = input.value;
-      });
-      validatePermissions(inputList.role_name, inputList.team_name);
-      //add the rest of the inputs to the inputList
-      if (loggedInUser?.role_name === "SuperAdmin") {
-        if (selectedTeam === "" || selectedRole === "") {
-          msg = "Please select a team and role!";
-          return;
-        } else {
-          inputList.team_name = selectedTeam;
-          inputList.role_name = selectedRole;
-        }
-      }
-
-      const response = await window.fetch(`${PUBLIC_URI}/users`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(inputList),
-      });
-      if (!response.ok) {
-        if (response.status === 422) {
-          msg = "Please fill in all fields correctly!";
-        } else {
-          msg = `Status: ${response.status} `;
-        }
-        throw new Error(msg);
-      } else {
-        showModal = false;
-        $createMode = false;
-        msg = "";
+  function getInputValues() {
+    let inputs = document.querySelectorAll(
+      ".form-input"
+    ) as NodeListOf<HTMLInputElement>;
+    let inputList: any = {};
+    //add the id to the inputList first as Null for new user
+    inputList["id"] = null;
+    inputs.forEach((input) => {
+      inputList[input.id] = input.value;
+    });
+    validatePermissions(inputList.role_name, inputList.team_name);
+    //add the rest of the inputs to the inputList
+    if (loggedInUser?.role_name === "SuperAdmin") {
+      if (selectedTeam === "" || selectedRole === "") {
+        msg = "Please select a team and role!";
         return;
+      } else {
+        inputList.team_name = selectedTeam;
+        inputList.role_name = selectedRole;
       }
-    } catch (err) {
-      console.error(err);
-      throw err; // Re-throw the error to propagate it to the caller
     }
+    return inputList;
   }
 
   function validatePermissions(role: string, team: string) {
@@ -192,7 +198,7 @@
   </form>
   <br />
   <div class="flex flex-col">
-    <button class="createOrUpdateSubmitButton" on:click={() => createUser()}
+    <button class="submitButton" on:click={() => createUser()}
       >Create User</button
     >
   </div>

@@ -1,10 +1,11 @@
 <script lang="ts">
   import { goto, invalidateAll } from "$app/navigation";
-  import { PUBLIC_URI } from '$env/static/public';
+  import { PUBLIC_URI } from "$env/static/public";
   import {
     createMode,
     deleteMode,
     editMode,
+    requestStatus,
   } from "$lib/stores/stores";
   import type { User } from "$lib/types/customTypes";
   import Icon from "@iconify/svelte";
@@ -12,6 +13,11 @@
   import CreateModal from "./createModal.svelte";
   import DeleteModal from "./deleteModal.svelte";
   import EditModal from "./editModal.svelte";
+
+  let showModal: boolean = false;
+  let currentUserData: User;
+  let userMap = new Map();
+  const loggedInUser: any = {};
 
   $: if (!showModal) {
     createMode.set(false);
@@ -28,7 +34,6 @@
     }
   }
 
-  const loggedInUser: any = {};
   if (typeof sessionStorage !== "undefined") {
     const userLoggedIn = sessionStorage.getItem("userLoggedIn");
     if (userLoggedIn !== null) {
@@ -39,51 +44,53 @@
   }
 
   onMount(async () => {
+    //check if authMessage is set
+    if ($requestStatus) {
+      //reset the authMessage
+      requestStatus.set(null);
+    }
     //fetch the users on page load and set the userMap
     fetchUsers().then((res) => {
       userMap = res;
     });
   });
 
-  let showModal: boolean = false;
-  let currentUserData: User;
-  let userMap = new Map();
-
+  //TODO: Look to autoset column names
   let columnNames = ["Full name", "email", "password", "Team", "Role"];
 
   async function fetchUsers() {
-    try {
-      let url = `${PUBLIC_URI}/users`;
-      if (loggedInUser?.role_name === "User") {
-        url += `?user_id=${loggedInUser.id}`;
-      } else if (loggedInUser.role_name === "Admin") {
-        url += `?team=${loggedInUser.team_name}`;
-      } else if (loggedInUser.role_name === "SuperAdmin") {
-        url;
-      } else {
-        goto("/login");
-        throw new Error(`Failed to fetch data. User not logged in.`);
-      }
+    await fetch(generateFetchURL())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`Status: ${res.status} `);
+        }
+        return res.json();
+      })
+      .then((res) => {
+        if (Array.isArray(res)) {
+          res.forEach((value, index) => userMap.set(index, value));
+        } else {
+          userMap.set(0, res);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        throw err; // Re-throw the error to propagate it to the caller
+      });
+    return userMap;
+  }
 
-      const response = await fetch(url);
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch data. Status: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      // //if the response is an array, map the array to the userMap
-      if (Array.isArray(data)) {
-        data.forEach((value, index) => userMap.set(index, value));
-      } else {
-        //if there is only one user, the response is not an array
-        userMap.set(0, data);
-      }
-      return userMap;
-    } catch (err) {
-      console.error(err);
-      throw err; // Re-throw the error to propagate it to the caller
+  function generateFetchURL() {
+    let url = `${PUBLIC_URI}/users`;
+    if (loggedInUser?.role_name === "User") {
+      return (url += `?user_id=${loggedInUser.id}`);
+    } else if (loggedInUser.role_name === "Admin") {
+      return (url += `?team=${loggedInUser.team_name}`);
+    } else if (loggedInUser.role_name === "SuperAdmin") {
+      return url;
+    } else {
+      goto("/login");
+      throw new Error(`Failed to fetch data. User not logged in.`);
     }
   }
 
@@ -113,9 +120,9 @@
       >
         <h1 class="text-2xl">User Management</h1>
         {#if loggedInUser?.role_name !== "User"}
-        <p class="mt-1 text-lg font-normal text-gray-500 dark:text-gray-400">
-          Here you can create, edit or delete users.
-        </p>
+          <p class="mt-1 text-lg font-normal text-gray-500 dark:text-gray-400">
+            Here you can create, edit or delete users.
+          </p>
           <button
             type="button"
             class="createButton absolute bottom-2 right-24"
@@ -127,9 +134,9 @@
             </p>
           </button>
         {:else}
-        <p class="mt-1 text-lg font-normal text-gray-500 dark:text-gray-400">
-          Here you can edit your accounts name, email and password.
-        </p>
+          <p class="mt-1 text-lg font-normal text-gray-500 dark:text-gray-400">
+            Here you can edit your accounts name, email and password.
+          </p>
         {/if}
       </caption>
       {#if userMap.size === 0}
