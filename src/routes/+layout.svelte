@@ -34,13 +34,13 @@
         class="flex items-center p-4 mb-4 text-green-800 rounded-lg bg-green-200 dark:bg-green-900 dark:text-green-400"
       >
         <Icon class="messageIcons" icon="line-md:alert-circle" />
-        {#if !loggedIn}
-          <div class="ml-3 text-lg font-bold">
-            {"Logged out successfully!"}
-          </div>
+        {#if loggedIn === true}
+          <div class="ml-3 text-lg font-bold">Logged In Successfully!</div>
+        {:else if loggedIn === false}
+          <div class="ml-3 text-lg font-bold">logged Out Successfully!</div>
         {:else}
           <div class="ml-3 text-lg font-bold">
-            {"Request " + requestMessage}
+            {"Request " + requestMessage + "!"}
           </div>
         {/if}
         <button
@@ -56,7 +56,9 @@
         class="flex items-center p-4 mb-4 text-red-800 rounded-lg bg-red-200 dark:bg-red-900 dark:text-red-400"
       >
         <Icon class="messageIcons" icon="line-md:alert-circle" />
-        <div class="ml-3 text-lg font-bold">{"Request " + requestStatus}</div>
+        <div class="ml-3 text-lg font-bold">
+          {"Request " + requestStatus + "!"}
+        </div>
         <button
           type="button"
           class="messageErrorClose"
