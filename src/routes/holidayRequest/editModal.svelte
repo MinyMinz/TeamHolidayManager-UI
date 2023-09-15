@@ -149,14 +149,6 @@
           disabled={true}
         /><br />
       {#if loggedInUser?.role_name === "Admin" || loggedInUser?.role_name === "SuperAdmin"}
-        <input
-          class="form-input"
-          type="text"
-          id="full_name"
-          name="fullname"
-          value={holidayData.full_name}
-          disabled={false}
-        /><br />
         <label for="approved">Status:</label><br />
         <select class="selectorDropdown" bind:value={isApproved}>
           <option value={null}>N/A</option>
