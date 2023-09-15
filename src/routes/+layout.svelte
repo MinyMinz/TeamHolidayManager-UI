@@ -7,7 +7,6 @@
   let dark = true;
   let requestMessage = "";
 
-
   requestStatus.subscribe((value) => {
     if (value === null) {
       return;
@@ -27,9 +26,9 @@
         class="flex items-center p-3 mb-3 text-white rounded-lg bg-green-500 dark:bg-green-900"
       >
         <Icon class="messageIcons" icon="line-md:alert-circle" />
-          <div class="ml-3 text-lg font-bold">
-            {"Request " + requestMessage + "!"}
-          </div>
+        <div class="ml-3 text-lg font-bold">
+          {"Request " + requestMessage + "!"}
+        </div>
         <button
           type="button"
           class="messageSuccessClose"
@@ -55,6 +54,6 @@
         </button>
       </div>
     {/if}
-    <slot/>
+    <slot />
   </main>
 </div>

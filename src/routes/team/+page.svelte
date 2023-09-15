@@ -122,7 +122,7 @@
           </p>
         {/if}
       </caption>
-      {#if teamManagmentData === null}
+      {#if $teamManagmentData === null}
         <div class="flex flex-col items-center justify-center h-full">
           <h1 class="text-3xl font-semibold text-gray-900 dark:text-white">
             No Teams found
