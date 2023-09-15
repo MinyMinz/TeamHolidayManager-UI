@@ -1,11 +1,13 @@
 <script lang="ts">
-  import { goto, invalidateAll } from "$app/navigation";
+  import { goto } from "$app/navigation";
   import { PUBLIC_URI } from "$env/static/public";
   import {
     createMode,
     deleteMode,
     editMode,
     requestStatus,
+    tableRefresh,
+    holidayManagmentData,
   } from "$lib/stores/stores";
   import type { Holiday } from "$lib/types/customTypes";
   import Icon from "@iconify/svelte";
@@ -16,21 +18,15 @@
 
   let showModal: boolean = false;
   let holidayData: Holiday;
-  let holidayMap = new Map();
   const loggedInUser: any = {};
 
   $: if (!showModal) {
     createMode.set(false);
     editMode.set(false);
     deleteMode.set(false);
-    // Check if the browser is running the code
-    if (typeof window !== "undefined") {
-      invalidateAll().then(() => {
-        // After invalidating, fetch the users again to get the updated list
-        fetchHolidayRequests().then((res) => {
-          holidayMap = res;
-        });
-      });
+
+    if ($tableRefresh) {
+      fetchHolidayRequests();
     }
   }
 
@@ -41,9 +37,7 @@
       requestStatus.set(null);
     }
     //fetch the holidayRequests on page load and set the holidayMap
-    fetchHolidayRequests().then((res) => {
-      holidayMap = res;
-    });
+    await fetchHolidayRequests();
   });
 
   //duplicated due to difficulty accessing with svelte stores
@@ -67,6 +61,7 @@
   ];
 
   async function fetchHolidayRequests() {
+    let holidayMap = new Map();
     await fetch(generateFetchURL())
       .then((res) => {
         if (!res.ok) {
@@ -87,7 +82,8 @@
         console.error(err);
         throw err; // Re-throw the error to propagate it to the caller
       });
-    return holidayMap;
+    holidayManagmentData.set(holidayMap);
+    tableRefresh.set(false);
   }
 
   function generateFetchURL() {
@@ -122,7 +118,7 @@
   }
 </script>
 
-<main class="page">
+<main class="defaultPage min-h-screen flex flex-col">
   <div class="tablePage relative overflow-x-auto shadow-md sm:rounded-lg">
     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
       <caption
@@ -144,7 +140,7 @@
           </p>
         </button>
       </caption>
-      {#if holidayMap.size === 0}
+      {#if $holidayManagmentData === null || $holidayManagmentData.size === 0}
         <div class="flex flex-col items-center justify-center h-full">
           <h1 class="text-3xl font-semibold text-gray-900 dark:text-white">
             No Holiday Requests found
@@ -167,7 +163,7 @@
           </tr>
         </thead>
         <tbody class="text-center">
-          {#each holidayMap as item (item[0])}
+          {#each $holidayManagmentData as item (item[0])}
             <tr class="text-lg text-black dark:text-gray-200">
               <td>{item[1].description}</td>
               <td>{item[1].start_date}</td>

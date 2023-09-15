@@ -11,15 +11,7 @@
 
   .defaultPage {
     @apply bg-gray-300 dark:bg-gray-800
-     text-black dark:text-white 
-        justify-center;
-  }
-
-  .page {
-    @apply bg-gray-300 dark:bg-gray-800
-     text-black dark:text-white 
-        min-h-screen 
-        flex flex-col 
+     text-black dark:text-white
         justify-center;
   }
 
@@ -41,8 +33,8 @@
         w-full py-2 px-3 rounded-sm;
   }
 
-  .errorMessage{
-    @apply font-bold text-red-600 dark:text-red-400 text-center
+  .errorMessage {
+    @apply font-bold text-red-600 dark:text-red-400 text-center;
   }
 
   .loginButton {
@@ -82,25 +74,23 @@
     @apply flex flex-col items-center text-xl text-white;
   }
 
-  .messageSuccessClose{
+  .messageSuccessClose {
     @apply ml-auto -mx-1.5 -my-1.5 
      bg-transparent text-green-500 rounded-lg p-1.5 hover:bg-green-200 
      inline-flex items-center justify-center 
      h-8 w-8 
-    dark:text-green-400 dark:hover:bg-green-700
+    dark:text-green-400 dark:hover:bg-green-700;
   }
 
-  .messageErrorClose{
+  .messageErrorClose {
     @apply ml-auto -mx-1.5 -my-1.5 
      bg-transparent text-red-500 rounded-lg p-1.5 hover:bg-red-200 
      inline-flex items-center justify-center 
      h-8 w-8 
-    dark:text-red-400 dark:hover:bg-red-700
+    dark:text-red-400 dark:hover:bg-red-700;
   }
 
-  .messageIcons{
+  .messageIcons {
     @apply text-2xl text-white;
   }
-
-
 }

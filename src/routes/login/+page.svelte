@@ -23,7 +23,7 @@
   }
 </script>
 
-<main class="page">
+<main class="defaultPage min-h-screen flex flex-col">
   <div class="login-container">
     <div class="login-form-container">
       <h1 class="login-title">Sign in</h1>
@@ -31,7 +31,7 @@
       <form class="login-form">
         <div class="mb-4 w-full">
           <label>
-            Email:
+            Email/ Username:
             <input
               class="form-input"
               type="email"

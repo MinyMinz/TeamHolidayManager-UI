@@ -1,11 +1,13 @@
 <script lang="ts">
-  import { goto, invalidateAll } from "$app/navigation";
+  import { goto } from "$app/navigation";
   import { PUBLIC_URI } from "$env/static/public";
   import {
     createMode,
     deleteMode,
     editMode,
     requestStatus,
+    tableRefresh,
+    teamManagmentData,
   } from "$lib/stores/stores";
   import Icon from "@iconify/svelte";
   import { onMount } from "svelte";
@@ -13,7 +15,6 @@
   import DeleteModal from "./deleteModal.svelte";
 
   let showModal: boolean = false;
-  let teamMap = new Map();
   let teamName: string;
   const loggedInUser: any = {};
 
@@ -21,14 +22,9 @@
     createMode.set(false);
     editMode.set(false);
     deleteMode.set(false);
-    //check if the browser is running the code
-    if (typeof window !== "undefined") {
-      invalidateAll().then(() => {
-        // After invalidating, fetch the teams again to get the updated list
-        fetchTeams().then((res) => {
-          teamMap = res;
-        });
-      });
+
+    if ($tableRefresh) {
+      fetchTeams();
     }
   }
 
@@ -48,15 +44,14 @@
       requestStatus.set(null);
     }
     //fetch the users on page load and set the teamMap
-    fetchTeams().then((res) => {
-      teamMap = res;
-    });
+    await fetchTeams();
   });
 
   let columnNames = ["Team Name", "Description"];
 
   async function fetchTeams() {
     checkIfAuthorized();
+    let teamMap = new Map();
     await fetch(`${PUBLIC_URI}/teams`)
       .then((res) => {
         if (res.status === 401) {
@@ -77,7 +72,8 @@
         console.error(err); // log the error
         throw err; // rethrow the error to be caught by the caller
       });
-    return teamMap;
+    teamManagmentData.set(teamMap);
+    tableRefresh.set(false);
   }
 
   function checkIfAuthorized() {
@@ -99,7 +95,7 @@
   }
 </script>
 
-<main class="page">
+<main class="defaultPage min-h-screen flex flex-col">
   <div class="tablePage relative overflow-x-auto shadow-md sm:rounded-lg">
     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
       <caption
@@ -126,7 +122,7 @@
           </p>
         {/if}
       </caption>
-      {#if teamMap.size === 0}
+      {#if teamManagmentData === null}
         <div class="flex flex-col items-center justify-center h-full">
           <h1 class="text-3xl font-semibold text-gray-900 dark:text-white">
             No Teams found
@@ -149,7 +145,7 @@
           </tr>
         </thead>
         <tbody class="text-center">
-          {#each teamMap as item (item[0])}
+          {#each $teamManagmentData as item (item[0])}
             <tr class="text-lg text-black dark:text-gray-200">
               <td>{item[1].name}</td>
               <td>{item[1].description}</td>

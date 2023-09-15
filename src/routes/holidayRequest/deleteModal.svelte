@@ -1,7 +1,7 @@
 <script lang="ts">
   import { PUBLIC_URI } from "$env/static/public";
   import Modal from "$lib/modal/globalModal.svelte";
-  import { deleteMode, requestStatus } from "$lib/stores/stores";
+  import { deleteMode, requestStatus, tableRefresh } from "$lib/stores/stores";
 
   export let showModal = false;
   export let holidayData: any;
@@ -32,7 +32,7 @@
           $deleteMode = false;
           msg = "";
           requestStatus.set("success");
-          return;
+          tableRefresh.set(true); //refresh the table
         }
       })
       .catch((err) => {

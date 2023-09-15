@@ -1,11 +1,13 @@
 <script lang="ts">
-  import { goto, invalidateAll } from "$app/navigation";
+  import { goto } from "$app/navigation";
   import { PUBLIC_URI } from "$env/static/public";
   import {
     createMode,
     deleteMode,
     editMode,
     requestStatus,
+    tableRefresh,
+    userManagmentData,
   } from "$lib/stores/stores";
   import type { User } from "$lib/types/customTypes";
   import Icon from "@iconify/svelte";
@@ -16,21 +18,16 @@
 
   let showModal: boolean = false;
   let currentUserData: User;
-  let userMap = new Map();
   const loggedInUser: any = {};
 
   $: if (!showModal) {
     createMode.set(false);
     editMode.set(false);
     deleteMode.set(false);
-    //check if the browser is running the code
-    if (typeof window !== "undefined") {
-      invalidateAll().then(() => {
-        // After invalidating, fetch the users again to get the updated list
-        fetchUsers().then((res) => {
-          userMap = res;
-        });
-      });
+    console.log($deleteMode);
+
+    if ($tableRefresh) {
+      fetchUsers();
     }
   }
 
@@ -50,15 +47,14 @@
       requestStatus.set(null);
     }
     //fetch the users on page load and set the userMap
-    fetchUsers().then((res) => {
-      userMap = res;
-    });
+    await fetchUsers();
   });
 
   //TODO: Look to autoset column names
-  let columnNames = ["Full name", "email", "password", "Team", "Role"];
+  let columnNames = ["Full Name", "Username", "Password", "Team", "Role"];
 
   async function fetchUsers() {
+    let userMap = new Map();
     await fetch(generateFetchURL())
       .then((res) => {
         if (!res.ok) {
@@ -77,7 +73,8 @@
         console.error(err);
         throw err; // Re-throw the error to propagate it to the caller
       });
-    return userMap;
+    userManagmentData.set(userMap);
+    tableRefresh.set(false);
   }
 
   function generateFetchURL() {
@@ -112,7 +109,7 @@
   }
 </script>
 
-<main class="page">
+<main class="defaultPage min-h-screen flex flex-col">
   <div class="tablePage relative overflow-x-auto shadow-md sm:rounded-lg">
     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
       <caption
@@ -139,7 +136,7 @@
           </p>
         {/if}
       </caption>
-      {#if userMap.size === 0}
+      {#if $userManagmentData === null || $userManagmentData.size === 0}
         <div class="flex flex-col items-center justify-center h-full">
           <h1 class="text-3xl font-semibold text-gray-900 dark:text-white">
             No users found
@@ -162,7 +159,7 @@
           </tr>
         </thead>
         <tbody class="text-center">
-          {#each userMap as item (item[0])}
+          {#each $userManagmentData as item (item[0])}
             <tr class="text-lg text-black dark:text-gray-200">
               <td>{item[1].full_name}</td>
               <td>{item[1].email}</td>

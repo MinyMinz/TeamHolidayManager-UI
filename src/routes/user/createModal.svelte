@@ -2,7 +2,7 @@
   import { goto } from "$app/navigation";
   import { PUBLIC_URI } from "$env/static/public";
   import Modal from "$lib/modal/globalModal.svelte";
-  import { createMode, requestStatus } from "$lib/stores/stores";
+  import { createMode, requestStatus, tableRefresh } from "$lib/stores/stores";
 
   export let showModal = false;
   let msg = "";
@@ -12,7 +12,7 @@
   let selectedTeam = "";
   let selectedRole = "";
   const loggedInUser: any = {};
-  
+
   if (typeof sessionStorage !== "undefined") {
     const userLoggedIn = sessionStorage.getItem("userLoggedIn");
     if (userLoggedIn !== null) {
@@ -45,15 +45,18 @@
       body: JSON.stringify(inputList),
     })
       .then((res) => {
-        if (res.status === 422) {
-          msg = "Please fill in all fields correctly!";
-        } else if (res.status === 201) {
+        if (!res.ok) {
+          if (res.status === 422) {
+            msg = "Please fill in all fields correctly!";
+          } else {
+            msg = "User Creation failed!";
+          }
+        } else {
           msg = "User created successfully!";
-          $createMode = false;
+          createMode.set(false);
           showModal = false;
           requestStatus.set("success");
-        } else {
-          msg = "User creation failed!";
+          tableRefresh.set(true); //fresh page on success
         }
       })
       .catch((err) => {
@@ -139,7 +142,7 @@
     <label for="fullname">*Full Name:</label><br />
     <input class="form-input" type="text" id="full_name" name="fullname" /><br
     />
-    <label for="email">*Email:</label><br />
+    <label for="email">*Username:</label><br />
     <input class="form-input" type="email" id="email" name="email" /><br />
     <label for="password">*Password:</label><br />
     <input class="form-input" type="text" id="password" name="password" /><br />

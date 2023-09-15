@@ -1,7 +1,7 @@
 <script lang="ts">
   import { PUBLIC_URI } from "$env/static/public";
   import Modal from "$lib/modal/globalModal.svelte";
-  import { editMode, requestStatus } from "$lib/stores/stores";
+  import { editMode, requestStatus, tableRefresh } from "$lib/stores/stores";
   import type { UserWithPassword } from "$lib/types/customTypes";
 
   export let showModal = false;
@@ -13,7 +13,7 @@
   let selectedTeam = userData.team_name;
   let selectedRole = userData.role_name;
   const loggedInUser: any = {};
-  
+
   if (typeof sessionStorage !== "undefined") {
     const userLoggedIn = sessionStorage.getItem("userLoggedIn");
     if (userLoggedIn !== null) {
@@ -23,6 +23,7 @@
     }
   }
 
+  // This should check if user is of Admin type and only fetch the teams and roles that are relevant to the admin
   if (
     loggedInUser.role_name === "SuperAdmin" ||
     loggedInUser.role_name === "Admin"
@@ -45,15 +46,18 @@
       body: JSON.stringify(inputList),
     })
       .then((res) => {
-        if (res.status === 422) {
-          msg = "Please fill in all fields correctly!";
-        } else if (res.status === 201) {
-          msg = "User created successfully!";
-          $editMode = false;
+        if (!res.ok) {
+          if (res.status === 422) {
+            msg = "Please fill in all fields correctly!";
+          } else {
+            msg = "User update failed!";
+          }
+        } else {
+          msg = "User updated successfully!";
+          editMode.set(false);
           showModal = false;
           requestStatus.set("success");
-        } else {
-          msg = "User creation failed!";
+          tableRefresh.set(true); //fresh page on success
         }
       })
       .catch((err) => {
@@ -136,7 +140,7 @@
       name="fullname"
       value={userData.full_name}
     /><br />
-    <label for="email">*Email:</label><br />
+    <label for="email">*Username:</label><br />
     <input
       class="form-input"
       type="email"

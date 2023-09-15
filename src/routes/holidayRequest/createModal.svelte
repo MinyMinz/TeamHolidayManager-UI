@@ -1,7 +1,7 @@
 <script lang="ts">
   import { PUBLIC_URI } from "$env/static/public";
   import Modal from "$lib/modal/globalModal.svelte";
-  import { createMode, requestStatus } from "$lib/stores/stores";
+  import { createMode, requestStatus, tableRefresh } from "$lib/stores/stores";
 
   export let showModal = false;
   let msg: string;
@@ -36,7 +36,7 @@
           $createMode = false;
           msg = "";
           requestStatus.set("success");
-          return;
+          tableRefresh.set(true); //refresh the table
         }
       })
       .catch((err) => {

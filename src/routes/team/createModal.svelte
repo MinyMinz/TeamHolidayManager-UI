@@ -2,7 +2,7 @@
   import { goto } from "$app/navigation";
   import { PUBLIC_URI } from "$env/static/public";
   import Modal from "$lib/modal/globalModal.svelte";
-  import { createMode, requestStatus } from "$lib/stores/stores";
+  import { createMode, requestStatus, tableRefresh } from "$lib/stores/stores";
 
   export let showModal = false;
   let msg = "";
@@ -35,14 +35,19 @@
       .then((res) => {
         // If the response is not ok, throw an error with the status text
         if (!res.ok) {
-          msg = "Please fill in all fields correctly!";
-          throw new Error(msg);
+          if (res.status === 422) {
+            msg = "Please fill in all fields correctly!";
+          } else {
+            msg = "Team deletion failed!";
+            throw new Error(msg + `Status: ${res.status}`);
+          }
+        } else {
+          msg = "Team deleted successfully!";
+          createMode.set(false);
+          showModal = false;
+          requestStatus.set("success");
+          tableRefresh.set(true); //fresh page on success
         }
-        showModal = false;
-        $createMode = false;
-        msg = "";
-        requestStatus.set("success");
-        return;
       })
       .catch((err) => {
         console.error(err);

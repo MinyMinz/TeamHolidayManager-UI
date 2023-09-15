@@ -2,7 +2,7 @@
   import { goto } from "$app/navigation";
   import { PUBLIC_URI } from "$env/static/public";
   import Modal from "$lib/modal/globalModal.svelte";
-  import { deleteMode, requestStatus } from "$lib/stores/stores";
+  import { deleteMode, requestStatus, tableRefresh } from "$lib/stores/stores";
 
   export let showModal = false;
   export let teamName: any;
@@ -24,18 +24,16 @@
       method: "DELETE",
     })
       .then((res) => {
-        if (res.status === 422) {
-          msg = "Please fill in all fields correctly!";
-        } else if (res.status === 200) {
-          msg = "Team deleted successfully!";
-          $deleteMode = false;
-          showModal = false;
-          requestStatus.set("success");
-        } else {
+        if (!res.ok) {
           msg = "Team deletion failed!";
           throw new Error(msg + `Status: ${res.status}`);
         }
-      })
+        msg = "Team deleted successfully!";
+        $deleteMode = false;
+        showModal = false;
+        requestStatus.set("success");
+        tableRefresh.set(true); //fresh page on success
+        })
       .catch((err) => {
         console.error(err);
         throw err; // Re-throw the error to propagate it to the caller

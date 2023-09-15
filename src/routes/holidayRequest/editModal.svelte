@@ -1,7 +1,7 @@
 <script lang="ts">
   import { PUBLIC_URI } from "$env/static/public";
   import Modal from "$lib/modal/globalModal.svelte";
-  import { editMode, requestStatus } from "$lib/stores/stores";
+  import { editMode, requestStatus, tableRefresh } from "$lib/stores/stores";
   import type { Holiday } from "$lib/types/customTypes";
 
   export let showModal = false;
@@ -40,8 +40,8 @@
           showModal = false;
           $editMode = false;
           msg = "";
-          requestStatus.set("success")
-          return;
+          requestStatus.set("success");
+          tableRefresh.set(true); //refresh the table
         }
       })
       .catch((err) => {
