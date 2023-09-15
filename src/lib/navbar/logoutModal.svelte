@@ -1,6 +1,6 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
-  import { isLoggedIn } from "$lib/stores/stores";
+  import { isLoggedIn, requestStatus } from "$lib/stores/stores";
   import Modal from "$lib/modal/globalModal.svelte";
 
   export let showModal = false;
@@ -12,6 +12,7 @@
     }
     showModal = false;
     $isLoggedIn = false;
+    requestStatus.set("success");
     // Redirect the user to the root page after logout
     goto("/");
   }

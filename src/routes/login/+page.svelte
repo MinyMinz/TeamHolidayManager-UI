@@ -1,16 +1,25 @@
-<script>
-  import { authMessage } from "$lib/stores/stores"; // get authMessage from user store
+<script lang="ts">
+  import { goto } from "$app/navigation";
   import { verifyCredentials } from "./verifyUser";
   import Icon from "@iconify/svelte";
 
   // User's email and password input variables
-  let email = "";
-  let password = "";
-  let passwordVisible = false;
+  let email: string = "";
+  let password: string = "";
+  let passwordVisible: boolean = false;
+  let errorMessage: string = "";
 
   // Handle form submission
   async function handleSubmit() {
-    await verifyCredentials(email, password);
+    await verifyCredentials(email, password).then((res) => {
+      if (res === "success") {
+        // If the user is authenticated, redirect to the homepage but logged in#
+        goto("/");
+      } else {
+        // If the user is not authenticated, display an error message
+        errorMessage = res;
+      }
+    });
   }
 </script>
 
@@ -18,7 +27,7 @@
   <div class="login-container">
     <div class="login-form-container">
       <h1 class="login-title">Sign in</h1>
-      {#if $authMessage}<p class="error">{$authMessage}</p>{/if}
+      {#if errorMessage !== ""}<p class="errorMessage">{errorMessage}</p>{/if}
       <form class="login-form">
         <div class="mb-4 w-full">
           <label>
@@ -31,7 +40,7 @@
             />
           </label>
         </div>
-        <div class="w-full">
+        <div class="w-full pointer-events-none">
           <label>
             Password:
             {#if passwordVisible}
@@ -49,20 +58,20 @@
                 required
               />
             {/if}
-            <button
-              type="button"
-              class="ml-1 absolute top-50 h-10"
-              on:click={() => (passwordVisible = !passwordVisible)}
-            >
-              {#if passwordVisible}
-                <Icon style="font-size: 18px" icon="mdi:eye" />
-                <!-- Show password icon -->
-              {:else}
-                <Icon style="font-size: 18px" icon="mdi:eye-off" />
-                <!-- Hide password icon -->
-              {/if}
-            </button>
           </label>
+          <button
+            type="button"
+            class="ml-1 absolute top-50 h-10"
+            on:click={() => (passwordVisible = !passwordVisible)}
+          >
+            {#if passwordVisible}
+              <Icon style="font-size: 18px" icon="mdi:eye" />
+              <!-- Show password icon -->
+            {:else}
+              <Icon style="font-size: 18px" icon="mdi:eye-off" />
+              <!-- Hide password icon -->
+            {/if}
+          </button>
         </div>
         <button
           type="button"
