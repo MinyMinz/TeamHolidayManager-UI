@@ -40,7 +40,7 @@
             />
           </label>
         </div>
-        <div class="w-full pointer-events-none">
+        <div class="w-full">
           <label>
             Password:
             {#if passwordVisible}
