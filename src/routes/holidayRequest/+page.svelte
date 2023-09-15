@@ -1,10 +1,11 @@
 <script lang="ts">
   import { goto, invalidateAll } from "$app/navigation";
-  import { PUBLIC_URI } from '$env/static/public';
+  import { PUBLIC_URI } from "$env/static/public";
   import {
     createMode,
     deleteMode,
     editMode,
+    requestStatus,
   } from "$lib/stores/stores";
   import type { Holiday } from "$lib/types/customTypes";
   import Icon from "@iconify/svelte";
@@ -12,6 +13,11 @@
   import CreateModal from "./createModal.svelte";
   import DeleteModal from "./deleteModal.svelte";
   import EditModal from "./editModal.svelte";
+
+  let showModal: boolean = false;
+  let holidayData: Holiday;
+  let holidayMap = new Map();
+  const loggedInUser: any = {};
 
   $: if (!showModal) {
     createMode.set(false);
@@ -29,17 +35,18 @@
   }
 
   onMount(async () => {
+    //check if authMessage is set
+    if ($requestStatus) {
+      //reset the authMessage
+      requestStatus.set(null);
+    }
     //fetch the holidayRequests on page load and set the holidayMap
     fetchHolidayRequests().then((res) => {
       holidayMap = res;
     });
   });
 
-  let showModal: boolean = false;
-  let holidayData: Holiday;
-  let holidayMap = new Map();
-
-  const loggedInUser: any = {};
+  //duplicated due to difficulty accessing with svelte stores
   if (typeof sessionStorage !== "undefined") {
     const userLoggedIn = sessionStorage.getItem("userLoggedIn");
     if (userLoggedIn !== null) {
@@ -60,38 +67,40 @@
   ];
 
   async function fetchHolidayRequests() {
-    try {
-      let url = `${PUBLIC_URI}/holiday-request`;
-      if (loggedInUser?.role_name === "User") {
-        url += `?user_id=${loggedInUser.id}`;
-      } else if (loggedInUser.role_name === "Admin") {
-        url += `?team_name=${loggedInUser.team_name}`;
-      } else if (loggedInUser.role_name === "SuperAdmin") {
-        url;
-      } else {
-        goto("/login");
-        throw new Error(`Failed to fetch data. User not logged in.`);
-      }
+    await fetch(generateFetchURL())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`Failed to fetch data. Status: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then((data) => {
+        // //if the response is an array, map the array to the holidayMap
+        if (Array.isArray(data)) {
+          data.forEach((value, index) => holidayMap.set(index, value));
+        } else {
+          //if there is only one holidayRequest, the response is not an array
+          holidayMap.set(0, data);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        throw err; // Re-throw the error to propagate it to the caller
+      });
+    return holidayMap;
+  }
 
-      const response = await fetch(url);
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch data. Status: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      // //if the response is an array, map the array to the holidayMap
-      if (Array.isArray(data)) {
-        data.forEach((value, index) => holidayMap.set(index, value));
-      } else {
-        //if there is only one holidayRequest, the response is not an array
-        holidayMap.set(0, data);
-      }
-      return holidayMap;
-    } catch (err) {
-      console.error(err);
-      throw err; // Re-throw the error to propagate it to the caller
+  function generateFetchURL() {
+    let url = `${PUBLIC_URI}/holiday-request`;
+    if (loggedInUser?.role_name === "User") {
+      return (url += `?user_id=${loggedInUser.id}`);
+    } else if (loggedInUser.role_name === "Admin") {
+      return (url += `?team_name=${loggedInUser.team_name}`);
+    } else if (loggedInUser.role_name === "SuperAdmin") {
+      return url;
+    } else {
+      goto("/login");
+      throw new Error(`Failed to fetch data. User not logged in.`);
     }
   }
 

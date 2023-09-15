@@ -1,10 +1,13 @@
 <script lang="ts">
-  import { PUBLIC_URI } from '$env/static/public';
+  import { PUBLIC_URI } from "$env/static/public";
   import Modal from "$lib/modal/globalModal.svelte";
-  import { createMode } from "$lib/stores/stores";
+  import { createMode, requestStatus } from "$lib/stores/stores";
 
-
+  export let showModal = false;
+  let msg: string;
+  let selectedTimeOfDay: string | null = null;
   const loggedInUser: any = {};
+  
   if (typeof sessionStorage !== "undefined") {
     const userLoggedIn = sessionStorage.getItem("userLoggedIn");
     if (userLoggedIn !== null) {
@@ -14,48 +17,62 @@
     }
   }
 
-  export let showModal = false;
-  let msg = "";
-  let selectedTimeOfDay: string | null = null;
-
   async function createHolidayRequest() {
+    const inputList = getInputValues();
+    fetch(`${PUBLIC_URI}/holiday-request`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(inputList),
+    })
+      .then((res) => {
+        if (!res.ok) {
+          msg = "Please fill in all fields correctly!";
+          throw new Error(msg);
+        } else {
+          showModal = false;
+          $createMode = false;
+          msg = "";
+          requestStatus.set("success");
+          return;
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        throw err; // Re-throw the error to propagate it to the caller
+      });
+  }
+
+  function getInputValues() {
     try {
       let inputs = document.querySelectorAll(
         ".form-input"
       ) as NodeListOf<HTMLInputElement>;
       let inputList: any = {};
-      //add the id to the inputList first as Null for new user
+      //add the id to the inputList first as uull for new holiday requests
       inputList["id"] = null;
       //add the rest of the inputs to the inputList
       inputs.forEach((input) => {
         inputList[input.id] = input.value;
       });
+
+      if (loggedInUser.full_name !== inputList.full_name) {
+        msg = "You cannot create a holiday request for another user.";
+        throw new Error(msg);
+      }
+      if (inputList.start_date > inputList.end_date) {
+        msg = "Start date cannot be after end date.";
+        throw new Error(msg);
+      }
       // delete full_name from inputList and replace with holidayData.user_id regardless of role
       delete inputList.full_name;
       inputList.user_id = loggedInUser?.id;
       inputList.team_name = loggedInUser?.team_name;
+      inputList.time_of_day = selectedTimeOfDay;
       inputList.approved = null;
-      const response = await fetch(`${PUBLIC_URI}/holiday-request`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(inputList),
-      });
-      if (!response.ok) {
-        if (response.status === 422) {
-          msg = "Please fill in all fields correctly!";
-        } else {
-          msg = `Status: ${response.status} `;
-        }
-        throw new Error(msg);
-      } else {
-        showModal = false;
-        $createMode = false;
-        msg = "";
-        return;
-      }
+      return inputList;
     } catch (err) {
       console.error(err);
       throw err; // Re-throw the error to propagate it to the caller
@@ -64,7 +81,9 @@
 </script>
 
 <Modal bind:showModal>
-  <h1 class="text-black dark:text-white" slot="header">Creating Holiday Request</h1>
+  <h1 class="text-black dark:text-white" slot="header">
+    Creating Holiday Request
+  </h1>
   <form class="text-black dark:text-white">
     <label for="Description">Description:</label><br />
     <input
@@ -126,7 +145,7 @@
   </form>
   <br />
   <div class="flex flex-col">
-    <button class="createOrUpdateSubmitButton" on:click={() => createHolidayRequest()}
+    <button class="submitButton" on:click={() => createHolidayRequest()}
       >Create</button
     >
   </div>

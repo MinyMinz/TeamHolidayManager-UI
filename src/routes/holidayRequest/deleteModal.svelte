@@ -1,12 +1,11 @@
 <script lang="ts">
-  import { PUBLIC_URI } from '$env/static/public';
+  import { PUBLIC_URI } from "$env/static/public";
   import Modal from "$lib/modal/globalModal.svelte";
-  import { deleteMode } from "$lib/stores/stores";
-
+  import { deleteMode, requestStatus } from "$lib/stores/stores";
 
   export let showModal = false;
   export let holidayData: any;
-  let msg = "";
+  let msg: string;
 
   const loggedInUser: any = {};
   if (typeof sessionStorage !== "undefined") {
@@ -19,6 +18,30 @@
   }
 
   async function deleteRequest() {
+    validateUserCanRemoveHoliday(); //check if the user is authorised to delete the request and sets the msg if not
+    if (msg) return; //if the user is not authorised to delete the request, return
+    await fetch(`${PUBLIC_URI}/holiday-request?holiday_id=` + holidayData.id, {
+      method: "DELETE",
+    })
+      .then((res) => {
+        if (!res.ok) {
+          msg = `Status: ${res.status} `;
+          throw new Error(msg);
+        } else {
+          showModal = false;
+          $deleteMode = false;
+          msg = "";
+          requestStatus.set("success");
+          return;
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        throw err; // Re-throw the error to propagate it to the caller
+      });
+  }
+
+  function validateUserCanRemoveHoliday() {
     if (loggedInUser.role_name === "User" && holidayData.approved === true) {
       msg = "You cannot delete an approved holiday request.";
       return;
@@ -30,25 +53,6 @@
     ) {
       msg = "You cannot delete an approved holiday request.";
       return;
-    }
-    try {
-      const response = await fetch(
-        `${PUBLIC_URI}/holiday-request?holiday_id=` + holidayData.id,
-        { method: "DELETE" }
-      );
-
-      if (response.ok) {
-        showModal = false;
-        $deleteMode = false;
-        msg = "";
-        return;
-      } else {
-        msg = `Status: ${response.status} Detail: ${response.statusText}`;
-        throw new Error(`Failed to send data. Status: ${response.status}`);
-      }
-    } catch (err) {
-      console.error(err);
-      throw err; // Re-throw the error to propagate it to the caller
     }
   }
 </script>
@@ -63,7 +67,7 @@
   <div class="flex flex-col mt-2">
     <button
       class="text-white bg-red-600 hover:bg-red-800 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
-      on:click={() => deleteRequest()}>Delete User</button
+      on:click={() => deleteRequest()}>Delete Request</button
     >
   </div>
 </Modal>
