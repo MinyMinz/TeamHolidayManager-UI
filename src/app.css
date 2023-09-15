@@ -10,9 +10,9 @@
   }
 
   .defaultPage {
-    @apply bg-gray-300 dark:bg-gray-800
+    @apply bg-gray-300 dark:bg-slate-800
      text-black dark:text-white
-        justify-center;
+        justify-center h-full;
   }
 
   .tablePage {
@@ -76,18 +76,18 @@
 
   .messageSuccessClose {
     @apply ml-auto -mx-1.5 -my-1.5 
-     bg-transparent text-green-500 rounded-lg p-1.5 hover:bg-green-200 
+     bg-transparent text-green-500 rounded-lg p-1.5
      inline-flex items-center justify-center 
      h-8 w-8 
-    dark:text-green-400 dark:hover:bg-green-700;
+    dark:text-green-400;
   }
 
   .messageErrorClose {
     @apply ml-auto -mx-1.5 -my-1.5 
-     bg-transparent text-red-500 rounded-lg p-1.5 hover:bg-red-200 
+     bg-transparent text-red-500 rounded-lg p-1.5 
      inline-flex items-center justify-center 
      h-8 w-8 
-    dark:text-red-400 dark:hover:bg-red-700;
+    dark:text-red-400;
   }
 
   .messageIcons {

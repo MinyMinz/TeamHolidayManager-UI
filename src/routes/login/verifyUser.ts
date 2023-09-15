@@ -31,7 +31,7 @@ export async function verifyCredentials(email: string, password: string) {
       }
     })
     .catch((err) => {
-      console.log(err);
+      console.error(err);
     });
   return statusMessage;
 }

@@ -19,7 +19,7 @@
 </script>
 
 <nav
-  class="bg-gray-400 dark:bg-slate-900 h-12 md:flex md:justify-between md:items-center sticky top-0 z-50"
+  class="bg-gray-400 dark:bg-slate-900 w-full md:flex md:justify-between md:items-center z-50"
 >
   <div class="flex items-center justify-between">
     <a

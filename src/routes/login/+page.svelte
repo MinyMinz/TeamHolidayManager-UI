@@ -26,7 +26,7 @@
 <main class="defaultPage min-h-screen flex flex-col">
   <div class="login-container">
     <div class="login-form-container">
-      <h1 class="login-title">Sign in</h1>
+      <h1 class="login-title underline">Sign in</h1>
       {#if errorMessage !== ""}<p class="errorMessage">{errorMessage}</p>{/if}
       <form class="login-form">
         <div class="mb-4 w-full">

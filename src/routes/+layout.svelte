@@ -31,7 +31,7 @@
     <Nav bind:dark />
     {#if $requestStatus === "success"}
       <div
-        class="flex items-center p-4 mb-4 text-green-800 rounded-lg bg-green-200 dark:bg-green-900 dark:text-green-400"
+        class="flex items-center p-3 mb-3 text-white rounded-lg bg-green-500 dark:bg-green-900"
       >
         <Icon class="messageIcons" icon="line-md:alert-circle" />
         {#if loggedIn === true}
@@ -53,7 +53,7 @@
       </div>
     {:else if $requestStatus !== null}
       <div
-        class="flex items-center p-4 mb-4 text-red-800 rounded-lg bg-red-200 dark:bg-red-900 dark:text-red-400"
+        class="flex items-center p-3 mb-3 text-white rounded-lg bg-red-500 dark:bg-red-900"
       >
         <Icon class="messageIcons" icon="line-md:alert-circle" />
         <div class="ml-3 text-lg font-bold">
@@ -68,6 +68,6 @@
         </button>
       </div>
     {/if}
-    <slot />
+    <slot/>
   </main>
 </div>

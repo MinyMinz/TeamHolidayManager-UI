@@ -24,7 +24,6 @@
     createMode.set(false);
     editMode.set(false);
     deleteMode.set(false);
-    console.log($deleteMode);
 
     if ($tableRefresh) {
       fetchUsers();
@@ -109,13 +108,15 @@
   }
 </script>
 
-<main class="defaultPage min-h-screen flex flex-col">
-  <div class="tablePage relative overflow-x-auto shadow-md sm:rounded-lg">
+<main class="defaultPage flex flex-col">
+  <div
+    class="tablePage relative overflow-x-auto overflow-hidden shadow-md sm:rounded-lg"
+  >
     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
       <caption
         class="p-5 font-semibold text-left text-gray-900 dark:text-white relative"
       >
-        <h1 class="text-2xl">User Management</h1>
+        <h1 class="text-2xl underline">User Management</h1>
         {#if loggedInUser?.role_name !== "User"}
           <p class="mt-1 text-lg font-normal text-gray-500 dark:text-gray-400">
             Here you can create, edit or delete users.

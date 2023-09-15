@@ -118,13 +118,13 @@
   }
 </script>
 
-<main class="defaultPage min-h-screen flex flex-col">
+<main class="defaultPage flex flex-col">
   <div class="tablePage relative overflow-x-auto shadow-md sm:rounded-lg">
     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
       <caption
         class="p-5 font-semibold text-left text-gray-900 dark:text-white relative"
       >
-        <h1 class="text-2xl">Holiday Requests</h1>
+        <h1 class="text-2xl underline">Holiday Requests</h1>
         <p class="mt-1 text-lg font-normal text-gray-500 dark:text-gray-400">
           Here you can create, edit or delete holdiay requests (Only admins can
           approve).
