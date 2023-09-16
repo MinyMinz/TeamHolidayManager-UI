@@ -1,11 +1,24 @@
 <script>
   import Nav from "$lib/navbar/nav.svelte";
-  import { requestStatus } from "$lib/stores/stores";
+  import { requestStatus, isLoggedIn } from "$lib/stores/stores";
   import Icon from "@iconify/svelte";
   import "../app.css";
+  import { onMount } from "svelte";
 
   let dark = true;
   let requestMessage = "";
+
+  // if page is refreshed, check if user is logged in
+  onMount(() => {
+    if (typeof sessionStorage !== "undefined") {
+      if (sessionStorage.getItem("userLoggedIn") !== null) {
+        isLoggedIn.set(true);
+      }
+      else {
+        isLoggedIn.set(false);
+      }
+    }
+  });
 
   requestStatus.subscribe((value) => {
     if (value === null) {

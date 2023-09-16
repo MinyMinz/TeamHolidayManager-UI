@@ -40,7 +40,7 @@
     await fetchHolidayRequests();
   });
 
-  //duplicated due to difficulty accessing with svelte stores
+  //get the logged in user from sessionStorage
   if (typeof sessionStorage !== "undefined") {
     const userLoggedIn = sessionStorage.getItem("userLoggedIn");
     if (userLoggedIn !== null) {
