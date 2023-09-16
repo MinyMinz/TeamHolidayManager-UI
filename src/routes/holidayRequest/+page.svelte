@@ -108,6 +108,11 @@
     $deleteMode = true;
     holidayData = data;
   }
+
+  function formatDate(date: string) {
+    let formattedDate = new Date(date);
+    return formattedDate.toLocaleDateString("en-GB");
+  }
 </script>
 
 <main class="defaultPage flex flex-col">
@@ -158,8 +163,8 @@
           {#each $holidayManagmentData as item (item[0])}
             <tr class="text-lg text-black dark:text-gray-200">
               <td>{item[1].description}</td>
-              <td>{item[1].start_date}</td>
-              <td>{item[1].end_date}</td>
+              <td>{formatDate(item[1].start_date)}</td>
+              <td>{formatDate(item[1].end_date)}</td>
               {#if item[1].time_of_day === null}
                 <td>N/A</td>
               {:else}
