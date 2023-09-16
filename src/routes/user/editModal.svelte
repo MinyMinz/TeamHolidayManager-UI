@@ -3,6 +3,9 @@
   import Modal from "$lib/modal/globalModal.svelte";
   import { editMode, requestStatus, tableRefresh } from "$lib/stores/stores";
   import type { UserWithPassword } from "$lib/types/customTypes";
+  import { getUserFromSessionStorage } from "$lib/customFunctions";
+
+  const loggedInUser: any = getUserFromSessionStorage(); //get the logged in user from sessionStorage
 
   export let showModal = false;
   export let userData: UserWithPassword;
@@ -12,16 +15,6 @@
   let roles: any = [];
   let selectedTeam = userData.team_name;
   let selectedRole = userData.role_name;
-  const loggedInUser: any = {};
-
-  if (typeof sessionStorage !== "undefined") {
-    const userLoggedIn = sessionStorage.getItem("userLoggedIn");
-    if (userLoggedIn !== null) {
-      for (const [key, value] of Object.entries(JSON.parse(userLoggedIn))) {
-        loggedInUser[key] = value;
-      }
-    }
-  }
 
   // This should check if user is of Admin type and only fetch the teams and roles that are relevant to the admin
   if (
@@ -104,7 +97,14 @@
       inputList[input.id] = input.value;
     });
     inputList.team_name = selectedTeam;
-    inputList.role_name = selectedRole;
+    if (
+      loggedInUser?.role_name === "SuperAdmin" &&
+      selectedRole === "SuperAdmin"
+    ) {
+      inputList.role_name = loggedInUser?.role_name;
+    } else {
+      inputList.role_name = selectedRole;
+    }
     return inputList;
   }
 
@@ -164,7 +164,7 @@
         id="team_name"
         name="teamName"
         value={userData?.team_name}
-        disabled={true}
+        readonly={true}
       /><br />
       <label class="text-gray-600" for="roleName">*Role Name:</label><br />
       <input
@@ -173,36 +173,58 @@
         id="role_name"
         name="roleName"
         value={userData?.role_name}
-        disabled={true}
+        readonly={true}
       /><br />
     {:else if loggedInUser?.role_name === "SuperAdmin"}
-      <label
-        for="teamName"
-        class="block text-sm font-medium text-gray-900 dark:text-white"
-        >Team Name:</label
-      >
-      <select class="selectorDropdown" bind:value={selectedTeam}>
-        <option selected value>*Choose Team</option>
-        {#each teams as team}
-          {#if teams.name !== "Super"}
-            <option value={team.name}>{team.name}</option>
-          {/if}
-        {/each}
-      </select>
+      <!-- If SuperAdmin is editing their own user set by default -->
+      {#if userData?.role_name === "SuperAdmin"}
+        <label class="text-gray-600" for="teamName">*Team Name:</label><br />
+        <input
+          class="disabled-form-input"
+          type="text"
+          id="team_name"
+          name="teamName"
+          value={userData?.team_name}
+          readonly={true}
+        /><br />
+        <label class="text-gray-600" for="roleName">*Role Name:</label><br />
+        <input
+          class="disabled-form-input"
+          type="text"
+          id="role_name"
+          name="roleName"
+          value={userData?.role_name}
+          readonly={true}
+        /><br />
+      {:else}
+        <label
+          for="teamName"
+          class="block text-sm font-medium text-gray-900 dark:text-white"
+          >Team Name:</label
+        >
+        <select class="selectorDropdown" bind:value={selectedTeam}>
+          <option selected value>*Choose Team</option>
+          {#each teams as team}
+            {#if team.name !== "Super"}
+              <option value={team.name}>{team.name}</option>
+            {/if}
+          {/each}
+        </select>
 
-      <label
-        for="roleName"
-        class="block text-sm font-medium text-gray-900 dark:text-white"
-        >Role Name:</label
-      >
-      <select class="selectorDropdown" bind:value={selectedRole}>
-        <option selected value>*Choose Role</option>
-        {#each roles as role}
-          {#if role.name !== "SuperAdmin"}
-            <option value={role.name}>{role.name}</option>
-          {/if}
-        {/each}
-      </select>
+        <label
+          for="roleName"
+          class="block text-sm font-medium text-gray-900 dark:text-white"
+          >Role Name:</label
+        >
+        <select class="selectorDropdown" bind:value={selectedRole}>
+          <option selected value>*Choose Role</option>
+          {#each roles as role}
+            {#if role.name !== "SuperAdmin"}
+              <option value={role.name}>{role.name}</option>
+            {/if}
+          {/each}
+        </select>
+      {/if}
     {/if}
     {#if msg}
       <br />
@@ -212,7 +234,7 @@
   <br />
 
   <div class="flex flex-col">
-    <button class="submitButton" on:click={() => updateUser()}
+    <button class="submitModalButton" on:click={() => updateUser()}
       >Update User</button
     >
   </div>

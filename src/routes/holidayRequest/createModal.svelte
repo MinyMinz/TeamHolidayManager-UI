@@ -2,20 +2,13 @@
   import { PUBLIC_URI } from "$env/static/public";
   import Modal from "$lib/modal/globalModal.svelte";
   import { createMode, requestStatus, tableRefresh } from "$lib/stores/stores";
+  import { getUserFromSessionStorage } from "$lib/customFunctions";
+
+  const loggedInUser: any = getUserFromSessionStorage(); //get the logged in user from sessionStorage
 
   export let showModal = false;
   let msg: string;
   let selectedTimeOfDay: string | null = null;
-  const loggedInUser: any = {};
-  
-  if (typeof sessionStorage !== "undefined") {
-    const userLoggedIn = sessionStorage.getItem("userLoggedIn");
-    if (userLoggedIn !== null) {
-      for (const [key, value] of Object.entries(JSON.parse(userLoggedIn))) {
-        loggedInUser[key] = value;
-      }
-    }
-  }
 
   async function createHolidayRequest() {
     const inputList = getInputValues();
@@ -57,17 +50,16 @@
       inputs.forEach((input) => {
         inputList[input.id] = input.value;
       });
-
-      if (loggedInUser.full_name !== inputList.full_name) {
-        msg = "You cannot create a holiday request for another user.";
+      //check if start date and end date are filled in
+      if (!inputList.start_date || !inputList.end_date) {
+        msg = "Please date fields correctly!";
         throw new Error(msg);
       }
+      //check if the start date is before the end date
       if (inputList.start_date > inputList.end_date) {
         msg = "Start date cannot be after end date.";
         throw new Error(msg);
       }
-      // delete full_name from inputList and replace with holidayData.user_id regardless of role
-      delete inputList.full_name;
       inputList.user_id = loggedInUser?.id;
       inputList.team_name = loggedInUser?.team_name;
       inputList.time_of_day = selectedTimeOfDay;
@@ -118,15 +110,15 @@
       <option value="AM">Morning</option>
       <option value="PM">Afternoon</option>
     </select>
-    <label for="fullname">*Fullname:</label><br />
-      <input
-        class="form-input"
-        type="text"
-        id="full_name"
-        name="fullname"
-        value={loggedInUser?.full_name}
-        disabled={true}
-      /><br />
+    <label class="text-gray-600" for="fullname">*Fullname:</label><br />
+    <input
+      class="disabled-form-input"
+      type="text"
+      id="full_name"
+      name="fullname"
+      value={loggedInUser?.full_name}
+      readonly={true}
+    /><br />
     {#if msg}
       <br />
       <p class="text-red-500 font-bold">{msg}</p>
@@ -134,7 +126,7 @@
   </form>
   <br />
   <div class="flex flex-col">
-    <button class="submitButton" on:click={() => createHolidayRequest()}
+    <button class="submitModalButton" on:click={() => createHolidayRequest()}
       >Create</button
     >
   </div>

@@ -3,6 +3,9 @@
   import Modal from "$lib/modal/globalModal.svelte";
   import { editMode, requestStatus, tableRefresh } from "$lib/stores/stores";
   import type { Holiday } from "$lib/types/customTypes";
+  import { getUserFromSessionStorage } from "$lib/customFunctions";
+
+  const loggedInUser: any = getUserFromSessionStorage(); //get the logged in user from sessionStorage
 
   export let showModal = false;
   export let holidayData: Holiday;
@@ -10,17 +13,6 @@
   let isApproved = holidayData.approved;
   let msg: string;
   let inputList: any = {};
-  const loggedInUser: any = {};
-  
-  //get the logged in user from sessionStorage
-  if (typeof sessionStorage !== "undefined") {
-    const userLoggedIn = sessionStorage.getItem("userLoggedIn");
-    if (userLoggedIn !== null) {
-      for (const [key, value] of Object.entries(JSON.parse(userLoggedIn))) {
-        loggedInUser[key] = value;
-      }
-    }
-  }
 
   async function updateHoliday() {
     validateUserCanEditHolidayOrApprove(); // check if user can edit holiday
@@ -79,9 +71,8 @@
     inputs.forEach((input) => {
       inputList[input.id] = input.value;
     });
+    //add the rest of the inputs to the inputList
     inputList.time_of_day = selectedTimeOfDay;
-    // delete full_name from inputList and replace with holidayData.user_id regardless of role
-    delete inputList.full_name;
     inputList.user_id = holidayData.user_id;
     inputList.team_name = holidayData.team_name;
     if (
@@ -94,6 +85,11 @@
     if (loggedInUser?.role_name !== "User") {
       inputList.approved = isApproved;
     }
+    if (inputList.start_date > inputList.end_date) {
+      msg = "Start date cannot be after end date.";
+      throw new Error(msg);
+    }
+    console.log(inputList);
     return inputList;
   }
 </script>
@@ -140,15 +136,15 @@
         <option value="AM">AM</option>
         <option value="PM">PM</option>
       </select>
-      <label for="fullname">*Fullname:</label><br />
-        <input
-          class="form-input"
-          type="text"
-          id="full_name"
-          name="fullname"
-          value={holidayData.full_name}
-          disabled={true}
-        /><br />
+      <label class="text-gray-600" for="fullname">*Fullname:</label><br />
+      <input
+        class="disabled-form-input"
+        type="text"
+        id="full_name"
+        name="fullname"
+        value={holidayData.full_name}
+        readonly={true}
+      /><br />
       {#if loggedInUser?.role_name === "Admin" || loggedInUser?.role_name === "SuperAdmin"}
         <label for="approved">Status:</label><br />
         <select class="selectorDropdown" bind:value={isApproved}>
@@ -165,9 +161,9 @@
     <br />
 
     <div class="flex flex-col">
-      <button class="submitButton" on:click={() => updateHoliday()}
+      <button class="submitModalButton" on:click={() => updateHoliday()}
         >Update</button
       >
     </div>
-  </form></Modal
->
+  </form>
+</Modal>

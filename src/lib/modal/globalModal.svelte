@@ -20,7 +20,7 @@
 		<!-- svelte-ignore a11y-autofocus -->
 		<!-- move class to css file for close button -->
 		<div class = "flex flex-col">
-			<button class=" focus:outline-none text-white bg-gray-500 hover:bg-gray-700 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mt-2" autofocus on:click={() => dialog.close()}>Close</button>
+			<button class="closeModalButton" autofocus on:click={() => dialog.close()}>Close</button>
 		</div>
 	</div>
 </dialog>

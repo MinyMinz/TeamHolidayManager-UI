@@ -3,19 +3,12 @@
   import { PUBLIC_URI } from "$env/static/public";
   import Modal from "$lib/modal/globalModal.svelte";
   import { createMode, requestStatus, tableRefresh } from "$lib/stores/stores";
+  import { getUserFromSessionStorage } from "$lib/customFunctions";
+
+  const loggedInUser: any = getUserFromSessionStorage(); //get the logged in user from sessionStorage
 
   export let showModal = false;
   let msg = "";
-  const loggedInUser: any = {};
-
-  if (typeof sessionStorage !== "undefined") {
-    const userLoggedIn = sessionStorage.getItem("userLoggedIn");
-    if (userLoggedIn !== null) {
-      for (const [key, value] of Object.entries(JSON.parse(userLoggedIn))) {
-        loggedInUser[key] = value;
-      }
-    }
-  }
 
   async function createTeam() {
     // Check if the user is logged in and is a super admin
@@ -36,13 +29,13 @@
         // If the response is not ok, throw an error with the status text
         if (!res.ok) {
           if (res.status === 422) {
-            msg = "Please fill in all fields correctly!";
+            msg = "Please provide a team name!";
           } else {
-            msg = "Team deletion failed!";
+            msg = "Team creation failed!";
             throw new Error(msg + `Status: ${res.status}`);
           }
         } else {
-          msg = "Team deleted successfully!";
+          msg = "Team created successfully!";
           createMode.set(false);
           showModal = false;
           requestStatus.set("success");
@@ -102,7 +95,7 @@
   </form>
   <br />
   <div class="flex flex-col">
-    <button class="submitButton" on:click={() => createTeam()}
+    <button class="submitModalButton" on:click={() => createTeam()}
       >Create Team</button
     >
   </div>

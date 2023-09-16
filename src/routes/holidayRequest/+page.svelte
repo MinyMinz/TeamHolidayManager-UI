@@ -15,10 +15,12 @@
   import CreateModal from "./createModal.svelte";
   import DeleteModal from "./deleteModal.svelte";
   import EditModal from "./editModal.svelte";
+  import { getUserFromSessionStorage } from "$lib/customFunctions";
+
+  const loggedInUser: any = getUserFromSessionStorage(); //get the logged in user from sessionStorage
 
   let showModal: boolean = false;
   let holidayData: Holiday;
-  const loggedInUser: any = {};
 
   $: if (!showModal) {
     createMode.set(false);
@@ -39,16 +41,6 @@
     //fetch the holidayRequests on page load and set the holidayMap
     await fetchHolidayRequests();
   });
-
-  //get the logged in user from sessionStorage
-  if (typeof sessionStorage !== "undefined") {
-    const userLoggedIn = sessionStorage.getItem("userLoggedIn");
-    if (userLoggedIn !== null) {
-      for (const [key, value] of Object.entries(JSON.parse(userLoggedIn))) {
-        loggedInUser[key] = value;
-      }
-    }
-  }
 
   let columnNames = [
     "Description",
@@ -182,6 +174,7 @@
               {:else}
                 <td>Not Reviewed Yet</td>
               {/if}
+              {#if !(loggedInUser?.role_name === "User" && item[1].approved === true)}
               <td>
                 <button
                   type="button"
@@ -204,6 +197,7 @@
                   </p>
                 </button>
               </td>
+              {/if}
             </tr>
           {/each}
         </tbody>

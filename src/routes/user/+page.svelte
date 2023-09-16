@@ -16,9 +16,12 @@
   import DeleteModal from "./deleteModal.svelte";
   import EditModal from "./editModal.svelte";
 
+  import { getUserFromSessionStorage } from "$lib/customFunctions";
+
+  const loggedInUser: any = getUserFromSessionStorage(); //get the logged in user from sessionStorage
+
   let showModal: boolean = false;
   let currentUserData: User;
-  const loggedInUser: any = {};
 
   $: if (!showModal) {
     createMode.set(false);
@@ -27,16 +30,6 @@
 
     if ($tableRefresh) {
       fetchUsers();
-    }
-  }
-
-  //get the logged in user from sessionStorage
-  if (typeof sessionStorage !== "undefined") {
-    const userLoggedIn = sessionStorage.getItem("userLoggedIn");
-    if (userLoggedIn !== null) {
-      for (const [key, value] of Object.entries(JSON.parse(userLoggedIn))) {
-        loggedInUser[key] = value;
-      }
     }
   }
 
@@ -165,8 +158,8 @@
             <tr class="text-lg text-black dark:text-gray-200">
               <td>{item[1].full_name}</td>
               <td>{item[1].email}</td>
-              <td>{"*".repeat(item[1].password.length)}</td>
-              <!-- This is to replace password with * might get rid of length and just display a fixed number of * (display only)-->
+              <!-- This is to replace password with *'s-->
+              <td>{"*".repeat(12)}</td>
               <td>{item[1].team_name}</td>
               <td>{item[1].role_name}</td>
               <td>
@@ -180,7 +173,7 @@
                     <Icon icon="mdi:account-edit" inline={true} />
                   </p>
                 </button>
-                {#if loggedInUser?.role_name !== "User"}
+                {#if loggedInUser?.role_name !== "User" && item[1].role_name !== "SuperAdmin"}
                   <button
                     type="button"
                     class="deleteButton"

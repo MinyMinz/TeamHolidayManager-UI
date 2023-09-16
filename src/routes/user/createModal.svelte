@@ -3,6 +3,9 @@
   import { PUBLIC_URI } from "$env/static/public";
   import Modal from "$lib/modal/globalModal.svelte";
   import { createMode, requestStatus, tableRefresh } from "$lib/stores/stores";
+  import { getUserFromSessionStorage } from "$lib/customFunctions";
+
+  const loggedInUser: any = getUserFromSessionStorage(); //get the logged in user from sessionStorage
 
   export let showModal = false;
   let msg = "";
@@ -11,17 +14,6 @@
   let roles: any = [];
   let selectedTeam = "";
   let selectedRole = "";
-  const loggedInUser: any = {};
-
-  //get the logged in user from sessionStorage
-  if (typeof sessionStorage !== "undefined") {
-    const userLoggedIn = sessionStorage.getItem("userLoggedIn");
-    if (userLoggedIn !== null) {
-      for (const [key, value] of Object.entries(JSON.parse(userLoggedIn))) {
-        loggedInUser[key] = value;
-      }
-    }
-  }
 
   if (!loggedInUser) {
     goto("/");
@@ -102,36 +94,41 @@
     inputs.forEach((input) => {
       inputList[input.id] = input.value;
     });
-    validatePermissions(inputList.role_name, inputList.team_name);
-    //add the rest of the inputs to the inputList
     if (loggedInUser?.role_name === "SuperAdmin") {
       if (selectedTeam === "" || selectedRole === "") {
         msg = "Please select a team and role!";
         return;
       } else {
+        // when team and role are selected, set the inputList to the selected values
         inputList.team_name = selectedTeam;
         inputList.role_name = selectedRole;
       }
+    } else {
+      // Admins and Users should not be able to set a team or role they should be set
+      inputList.team_name = loggedInUser?.team_name;
+      inputList.role_name = "User";
     }
+    validatePermissions(inputList.role_name, inputList.team_name);
     return inputList;
   }
 
   function validatePermissions(role: string, team: string) {
     if (loggedInUser?.role_name == "User") {
       msg = "You do not have permission to create users.";
-      return;
+      throw new Error(msg);
     } else if (loggedInUser?.role_name == "Admin") {
+      console.log(role, team);
       if (role !== "User") {
         msg = "You do not have permission to create Admins or SuperAdmins.";
-        return;
+        throw new Error(msg);
       } else if (team !== loggedInUser?.team_name) {
         msg = "You do not have permission to create users in other teams.";
-        return;
+        throw new Error(msg);
       }
     } else if (loggedInUser?.role_name == "SuperAdmin") {
       if (role === "SuperAdmin") {
         msg = "You cannot create more superAdmins";
-        return;
+        throw new Error(msg);
       }
     }
   }
@@ -148,23 +145,23 @@
     <label for="password">*Password:</label><br />
     <input class="form-input" type="text" id="password" name="password" /><br />
     {#if loggedInUser?.role_name === "User" || loggedInUser?.role_name === "Admin"}
-      <label for="teamName">*Team Name:</label><br />
+      <label class="text-gray-600" for="teamName">*Team Name:</label><br />
       <input
-        class="form-input"
+        class="disabled-form-input"
         type="text"
         id="team_name"
         name="teamName"
         value={loggedInUser.team_name}
-        disabled={true}
+        readonly={true}
       /><br />
-      <label for="roleName">*Role Name:</label><br />
+      <label class="text-gray-600" for="roleName">*Role Name:</label><br />
       <input
-        class="form-input"
+        class="disabled-form-input"
         type="text"
         id="role_name"
         name="roleName"
         value="User"
-        disabled={true}
+        readonly={true}
       /><br />
     {:else if loggedInUser?.role_name === "SuperAdmin"}
       <label
@@ -175,7 +172,7 @@
       <select class="selectorDropdown" bind:value={selectedTeam}>
         <option selected value>*Choose Team</option>
         {#each teams as team}
-          {#if teams.name !== "Super"}
+          {#if team.name !== "Super"}
             <option value={team.name}>{team.name}</option>
           {/if}
         {/each}
@@ -202,7 +199,7 @@
   </form>
   <br />
   <div class="flex flex-col">
-    <button class="submitButton" on:click={() => createUser()}
+    <button class="submitModalButton" on:click={() => createUser()}
       >Create User</button
     >
   </div>

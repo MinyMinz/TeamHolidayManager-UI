@@ -2,20 +2,13 @@
   import { PUBLIC_URI } from "$env/static/public";
   import Modal from "$lib/modal/globalModal.svelte";
   import { deleteMode, requestStatus, tableRefresh } from "$lib/stores/stores";
+  import { getUserFromSessionStorage } from "$lib/customFunctions";
+
+  const loggedInUser: any = getUserFromSessionStorage(); //get the logged in user from sessionStorage
 
   export let showModal = false;
   export let user: any;
   let msg = "";
-
-  const loggedInUser: any = {};
-  if (typeof sessionStorage !== "undefined") {
-    const userLoggedIn = sessionStorage.getItem("userLoggedIn");
-    if (userLoggedIn !== null) {
-      for (const [key, value] of Object.entries(JSON.parse(userLoggedIn))) {
-        loggedInUser[key] = value;
-      }
-    }
-  }
 
   async function deleteUser() {
     validatePermissions();
@@ -63,9 +56,8 @@
     <p class="font-bold text-red-600 dark:text-red-400 text-center">{msg}</p>
   {/if}
   <div class="flex flex-col mt-2">
-    <button
-      class="text-white bg-red-600 hover:bg-red-800 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
-      on:click={() => deleteUser()}>Delete User</button
+    <button class="deleteModalButton" on:click={() => deleteUser()}
+      >Delete User</button
     >
   </div>
 </Modal>

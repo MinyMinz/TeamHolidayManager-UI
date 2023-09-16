@@ -13,10 +13,11 @@
   import { onMount } from "svelte";
   import CreateModal from "./createModal.svelte";
   import DeleteModal from "./deleteModal.svelte";
+  import { getUserFromSessionStorage } from "$lib/customFunctions";
 
   let showModal: boolean = false;
   let teamName: string;
-  const loggedInUser: any = {};
+  const loggedInUser: any = getUserFromSessionStorage(); //get the logged in user from sessionStorage
 
   $: if (!showModal) {
     createMode.set(false);
@@ -25,16 +26,6 @@
 
     if ($tableRefresh) {
       fetchTeams();
-    }
-  }
-
-  //get the logged in user from sessionStorage
-  if (typeof sessionStorage !== "undefined") {
-    const userLoggedIn = sessionStorage.getItem("userLoggedIn");
-    if (userLoggedIn !== null) {
-      for (const [key, value] of Object.entries(JSON.parse(userLoggedIn))) {
-        loggedInUser[key] = value;
-      }
     }
   }
 
@@ -55,9 +46,13 @@
     let teamMap = new Map();
     await fetch(`${PUBLIC_URI}/teams`)
       .then((res) => {
-        if (res.status === 401) {
-          goto("/");
-          throw new Error(`Unauthorized access. Status: ${res.status}`);
+        if (!res.ok) {
+          if (res.status === 401) {
+            goto("/");
+            throw new Error(`Unauthorized access. Status: ${res.status}`);
+          } else {
+            throw new Error(`Failed to fetch data. Status: ${res.status}`);
+          }
         }
         return res.json();
       })
@@ -67,6 +62,7 @@
         } else {
           teamMap.set(0, res);
         }
+        teamMap.delete("Super");
         return teamMap;
       })
       .catch((err) => {
