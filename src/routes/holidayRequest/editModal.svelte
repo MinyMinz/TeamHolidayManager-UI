@@ -71,6 +71,7 @@
     inputs.forEach((input) => {
       inputList[input.id] = input.value;
     });
+    validateDates(inputList.start_date, inputList.end_date);
     //add the rest of the inputs to the inputList
     inputList.time_of_day = selectedTimeOfDay;
     inputList.user_id = holidayData.user_id;
@@ -85,12 +86,26 @@
     if (loggedInUser?.role_name !== "User") {
       inputList.approved = isApproved;
     }
-    if (inputList.start_date > inputList.end_date) {
+    console.log(inputList);
+    return inputList;
+  }
+
+  function validateDates(start_date: string, end_date: string) {
+    //check if start date and end date are filled in
+    if (!start_date || !end_date) {
+      msg = "Please date fields correctly!";
+      throw new Error(msg);
+    }
+    //check if the start date is before the end date
+    else if (start_date > end_date) {
       msg = "Start date cannot be after end date.";
       throw new Error(msg);
     }
-    console.log(inputList);
-    return inputList;
+    //check if start date is equal to end date and time of day is not selected
+    else if (start_date === end_date && selectedTimeOfDay === null) {
+      msg = "Please select a time of day.";
+      throw new Error(msg);
+    }
   }
 </script>
 
