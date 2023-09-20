@@ -16,14 +16,16 @@ There are 3 user roles:
 
 - Can create, read, update and delete users
 - Can create, read, update and delete teams
-- Can create, read, update and delete holiday requests
-- Can approve or reject holiday requests of all teams and users
+- Can create for themselves
+- Can read, update and delete holiday requests for themselves and all other user roles
+- Can approve or reject holiday requests of all user roles
 
 ### Admin
 
 - Can create, update and delete users within their team
-- Can create, update and delete holiday requests for users within their team
-- Can approve or reject holiday requests for users within their team
+- Can only create holiday requests for themselves
+- Can read, update and delete holiday requests for themselves and users within their team
+- Can approve or reject holiday requests for users within their team but not other teams or their own
 
 ### User
 
