@@ -4,8 +4,37 @@ This is the front-end to the Team Holiday Manager application. It enables users 
 In addition to the core functionality, it also allows users to manage their profile and view their holiday history.
 With the exception of the Teams page, all pages are protected by authentication allowing only SuperAdmins to create teams.
 
+## User Roles
+
+There are 3 user roles:
+
+- SuperAdmin
+- Admin
+- User
+
+### SuperAdmin
+
+- Can create, read, update and delete users
+- Can create, read, update and delete teams
+- Can create, read, update and delete holiday requests
+- Can approve or reject holiday requests of all teams and users
+
+### Admin
+
+- Can create, update and delete users within their team
+- Can create, update and delete holiday requests for users within their team
+- Can approve or reject holiday requests for users within their team
+
+### User
+
+- Can update their own profile (name, email, password)
+- Can create, update and delete their own holiday requests
+- Can view their own holiday requests
+
+## Production Environment
+
 The application is deployed via Vercel and can be accessed at the following link:
-[Live Demo](https://team-holiday-manager-ui.vercel.app/)
+[Live Application](https://team-holiday-manager-ui.vercel.app/)
 
 ![Screenshot of Home page](static/image.png)
 
