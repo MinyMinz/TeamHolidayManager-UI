@@ -12,11 +12,10 @@
   let selectedTimeOfDay = holidayData.time_of_day;
   let isApproved = holidayData.approved;
   let msg: string;
-  let inputList: any = {};
 
   async function updateHoliday() {
     validateUserCanEditHolidayOrApprove(); // check if user can edit holiday
-    inputList = getInputValues();
+    const inputList = getInputValues(); //get the input values
     await fetch(`${PUBLIC_URI}/holiday-request`, {
       method: "PUT",
       headers: {
@@ -30,6 +29,7 @@
           msg = "Please fill in all fields correctly!";
           throw new Error(msg);
         } else {
+          // Reset the form
           showModal = false;
           $editMode = false;
           msg = "";
@@ -44,10 +44,12 @@
   }
 
   function validateUserCanEditHolidayOrApprove() {
+    //check if the user is authorised to edit or approve the holiday request and sets the msg if not
     if (loggedInUser.role_name === "User" && holidayData.approved) {
       msg = "You cannot edit an approved holiday";
       throw new Error(msg);
     }
+    //check if the admin is trying to edit the approved field of their own holiday request and set the msg if so
     if (
       loggedInUser.role_name === "Admin" &&
       loggedInUser.id === holidayData.user_id &&
@@ -155,6 +157,7 @@
         name="fullname"
         value={holidayData.full_name}
         readonly={true} /><br />
+      <!-- if the logged in user is an admin, display the approved field -->
       {#if loggedInUser?.role_name === "Admin" || loggedInUser?.role_name === "SuperAdmin"}
         <label for="approved">Status:</label><br />
         <select class="selectorDropdown" bind:value={isApproved}>

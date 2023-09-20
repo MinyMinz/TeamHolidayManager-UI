@@ -11,7 +11,7 @@
   let msg = "";
 
   async function deleteUser() {
-    validatePermissions();
+    validatePermissionsToDelete();
     await fetch(`${PUBLIC_URI}/users?user_id=` + user.id, { method: "DELETE" })
       .then((res) => {
         if (!res.ok) {
@@ -30,7 +30,8 @@
       });
   }
 
-  function validatePermissions() {
+  function validatePermissionsToDelete() {
+    // In the event user has managed to access this page without being logged in as SuperAdmin, redirect to root page
     if (loggedInUser.role_name === "User") {
       msg = "You do not have permission to delete users.";
       return;

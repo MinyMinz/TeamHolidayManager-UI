@@ -15,9 +15,12 @@
 
   export let showModal = false;
 
+  // Handle the logout request
   function handleLogout() {
     showModal = false;
+    // Reset all stores to their default values to ensure that the user is logged out
     resetAllStores();
+    // Set the request status to success to display the success message
     requestStatus.set("success");
     // Redirect the user to the root page after logout
     goto("/");
@@ -28,7 +31,7 @@
     if (typeof sessionStorage !== "undefined") {
       sessionStorage.removeItem("userLoggedIn");
     }
-    // Reset all local stores
+    // Reset all local stores to their default values
     isLoggedIn.set(false);
     createMode.set(false);
     editMode.set(false);
@@ -40,6 +43,7 @@
   }
 </script>
 
+<!-- This is the Modal for logout confirmation  -->
 <Modal bind:showModal>
   <h1 class="text-center text-black dark:text-white" slot="header">
     Please confirm that you wish to sign out?

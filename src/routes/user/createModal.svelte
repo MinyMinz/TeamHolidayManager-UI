@@ -94,6 +94,7 @@
     inputs.forEach((input) => {
       inputList[input.id] = input.value;
     });
+    //if the logged in user is a SuperAdmin, check if a team and role are selected
     if (loggedInUser?.role_name === "SuperAdmin") {
       if (selectedTeam === "" || selectedRole === "") {
         msg = "Please select a team and role!";
@@ -108,16 +109,17 @@
       inputList.team_name = loggedInUser?.team_name;
       inputList.role_name = "User";
     }
-    validatePermissions(inputList.role_name, inputList.team_name);
+    //
+    validatePermissionsToCreate(inputList.role_name, inputList.team_name);
     return inputList;
   }
 
-  function validatePermissions(role: string, team: string) {
+  function validatePermissionsToCreate(role: string, team: string) {
+    //check if the logged in user has permission to create a user with the selected role and team and throw an error if not
     if (loggedInUser?.role_name == "User") {
       msg = "You do not have permission to create users.";
       throw new Error(msg);
     } else if (loggedInUser?.role_name == "Admin") {
-      console.log(role, team);
       if (role !== "User") {
         msg = "You do not have permission to create Admins or SuperAdmins.";
         throw new Error(msg);
@@ -127,7 +129,7 @@
       }
     } else if (loggedInUser?.role_name == "SuperAdmin") {
       if (role === "SuperAdmin") {
-        msg = "You cannot create more superAdmins";
+        msg = "You cannot create a SuperAdmin";
         throw new Error(msg);
       }
     }

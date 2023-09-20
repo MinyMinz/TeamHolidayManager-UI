@@ -28,7 +28,7 @@
   }
 
   async function updateUser() {
-    validatePermissions();
+    validatePermissionsToEdit();
     const inputList = getInputValues();
     await fetch(`${PUBLIC_URI}/users`, {
       method: "PUT",
@@ -97,6 +97,7 @@
       inputList[input.id] = input.value;
     });
     inputList.team_name = selectedTeam;
+    //if the logged in user is a SuperAdmin, check role name has not been changed
     if (
       loggedInUser?.role_name === "SuperAdmin" &&
       selectedRole === "SuperAdmin"
@@ -108,7 +109,8 @@
     return inputList;
   }
 
-  function validatePermissions() {
+  function validatePermissionsToEdit() {
+    // validate that the user is not trying to change their team or role if they are not a SuperAdmin
     if (loggedInUser?.role_name == "User") {
       if (selectedTeam != loggedInUser?.team_name || selectedRole != "User") {
         msg = "You do not have permission to change your team or role.";

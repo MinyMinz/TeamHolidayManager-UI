@@ -1,3 +1,4 @@
+// Global function used to get the user from the session storage
 export function getUserFromSessionStorage() {
   const loggedInUser: any = {};
   if (typeof sessionStorage !== "undefined") {

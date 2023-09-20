@@ -11,7 +11,7 @@
   let msg = "";
 
   async function createTeam() {
-    // Check if the user is logged in and is a super admin
+    // Check if the user is logged in and is a SuperAdmin, redirect to root page and throw an error if not
     validateIsSuperAdmin();
     // Get all the input values
     const inputList = getInputValues();
@@ -60,6 +60,7 @@
   }
 
   function validateIsSuperAdmin() {
+    // Check if the user is logged in and is not SuperAdmin, redirect to root page and throw an error if so
     if (!loggedInUser || loggedInUser.role_name !== "SuperAdmin") {
       alert("You do not have permission to create teams.");
       showModal = false;

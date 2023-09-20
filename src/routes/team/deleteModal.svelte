@@ -12,7 +12,8 @@
   let msg = "";
 
   async function deleteTeam() {
-    validatePermissions();
+    // Check if the user is logged in and is a SuperAdmin, redirect to root page and throw an error if not
+    validateIsSuperAdmin();
     if (teamName === "Super") {
       msg = "Cannot delete this team!";
       return;
@@ -37,7 +38,8 @@
       });
   }
 
-  function validatePermissions() {
+  function validateIsSuperAdmin() {
+    // In the event user has managed to access this page without being logged in as SuperAdmin, redirect to root page
     if (loggedInUser.role_name !== "SuperAdmin") {
       alert("You do not have permission to delete teams.");
       showModal = false;

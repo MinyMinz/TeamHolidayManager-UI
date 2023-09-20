@@ -25,6 +25,7 @@
           msg = "Please fill in all fields correctly!";
           throw new Error(msg);
         } else {
+          // Reset the form
           showModal = false;
           $createMode = false;
           msg = "";

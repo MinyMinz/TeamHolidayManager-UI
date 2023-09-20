@@ -8,7 +8,7 @@
   let dark = true;
   let requestMessage = "";
 
-  // if page is refreshed, check if user is logged in
+  // on page mount check if userLoggedIn session storage is set and set the isLoggedIn store accordingly
   onMount(() => {
     if (typeof sessionStorage !== "undefined") {
       if (sessionStorage.getItem("userLoggedIn") !== null) {
@@ -19,6 +19,7 @@
     }
   });
 
+  // store subscription to check if requestStatus is set and set the requestMessage for the page accordingly
   requestStatus.subscribe((value) => {
     if (value === null) {
       return;

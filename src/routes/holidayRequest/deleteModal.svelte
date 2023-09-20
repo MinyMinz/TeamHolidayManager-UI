@@ -21,6 +21,7 @@
           msg = `Status: ${res.status} `;
           throw new Error(msg);
         } else {
+          // Reset the form
           showModal = false;
           $deleteMode = false;
           msg = "";

@@ -4,7 +4,6 @@
   import {
     createMode,
     deleteMode,
-    editMode,
     requestStatus,
     tableRefresh,
     teamManagmentData,
@@ -19,9 +18,9 @@
   let teamName: string;
   const loggedInUser: any = getUserFromSessionStorage(); //get the logged in user from sessionStorage
 
+  // reactive statement to check if the modal is closed and reset the modes and refresh the table upon sucessful creation or deletion
   $: if (!showModal) {
     createMode.set(false);
-    editMode.set(false);
     deleteMode.set(false);
 
     if ($tableRefresh) {
@@ -30,6 +29,8 @@
   }
 
   onMount(async () => {
+    //check if user is authorised to view this page and redirect to root page if not
+    checkIfAuthorized();
     //check if authMessage is set
     if ($requestStatus) {
       //reset the authMessage
@@ -42,6 +43,7 @@
   let columnNames = ["Team Name", "Description"];
 
   async function fetchTeams() {
+    // In the event user has managed to access this page without being logged in as SuperAdmin, redirect to root page
     checkIfAuthorized();
     let teamMap = new Map();
     await fetch(`${PUBLIC_URI}/teams`)
@@ -98,25 +100,20 @@
       <caption
         class="p-5 font-semibold text-left text-gray-900 dark:text-white relative">
         <h1 class="text-2xl underline">Team Management</h1>
-        {#if loggedInUser?.role_name === "SuperAdmin"}
-          <p class="mt-1 text-lg font-normal text-gray-500 dark:text-gray-400">
-            Here you can create, delete teams.
+        <p class="mt-1 text-lg font-normal text-gray-500 dark:text-gray-400">
+          Here you can create, delete teams.
+        </p>
+        <button
+          type="button"
+          class="createButton absolute bottom-2 right-24"
+          on:click={() => setCreateMode()}>
+          <p class="icons">
+            Create Team
+            <Icon icon="fluent:people-team-add-24-regular" inline={true} />
           </p>
-          <button
-            type="button"
-            class="createButton absolute bottom-2 right-24"
-            on:click={() => setCreateMode()}>
-            <p class="icons">
-              Create Team
-              <Icon icon="fluent:people-team-add-24-regular" inline={true} />
-            </p>
-          </button>
-        {:else}
-          <p class="mt-1 text-lg font-normal text-gray-500 dark:text-gray-400">
-            Here you can edit your accounts name, email and password.
-          </p>
-        {/if}
+        </button>
       </caption>
+      <!-- If there are no teams in the database, display a message -->
       {#if $teamManagmentData === null}
         <div class="flex flex-col items-center justify-center h-full">
           <h1 class="text-3xl font-semibold text-gray-900 dark:text-white">
@@ -127,8 +124,9 @@
           </p>
         </div>
       {:else}
-        <thead
-          class="tableHeadings">
+        <!-- If there are teams in the database, display them in a table -->
+        <thead class="tableHeadings">
+          <!-- Loop through the column names and display them in the table -->
           <tr>
             {#each columnNames as column}
               <th scope="col" class="text-base">

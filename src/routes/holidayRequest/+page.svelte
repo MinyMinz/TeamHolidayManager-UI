@@ -22,6 +22,7 @@
   let showModal: boolean = false;
   let holidayData: Holiday;
 
+  // reactive statement to check if the modal is closed and reset the modes and refresh the table upon sucessful creation, edit or deletion
   $: if (!showModal) {
     createMode.set(false);
     editMode.set(false);
@@ -53,6 +54,7 @@
   ];
 
   async function fetchHolidayRequests() {
+    // Fetch the data from the API based on the logged in user's role
     let holidayMap = new Map();
     await fetch(generateFetchURL())
       .then((res) => {
@@ -79,6 +81,7 @@
   }
 
   function generateFetchURL() {
+    // Generate the URL based on the logged in user's role
     let url = `${PUBLIC_URI}/holiday-request`;
     if (loggedInUser?.role_name === "User") {
       return (url += `?user_id=${loggedInUser.id}`);
@@ -110,6 +113,7 @@
   }
 
   function formatDate(date: string) {
+    //format the date to dd/mm/yyyy instead of yyyy-mm-dd
     let formattedDate = new Date(date);
     return formattedDate.toLocaleDateString("en-GB");
   }
@@ -135,6 +139,7 @@
           </p>
         </button>
       </caption>
+      <!-- if there are no holiday requests in the database, display a message -->
       {#if $holidayManagmentData === null || $holidayManagmentData.size === 0}
         <div class="flex flex-col items-center justify-center h-full">
           <h1 class="text-3xl font-semibold text-gray-900 dark:text-white">
@@ -145,8 +150,9 @@
           </p>
         </div>
       {:else}
-        <thead
-          class="tableHeadings">
+        <!-- if there are holiday requests in the database, display them in a table -->
+        <thead class="tableHeadings">
+          <!-- Loop through the column names and display them in the table -->
           <tr>
             {#each columnNames as column}
               <th scope="col" class="text-base">
@@ -157,11 +163,13 @@
           </tr>
         </thead>
         <tbody class="text-center">
+          <!-- loop through the holidayManagmentData and display the data in the table -->
           {#each $holidayManagmentData as item (item[0])}
             <tr class="text-lg text-black dark:text-gray-200">
               <td>{item[1].description}</td>
               <td>{formatDate(item[1].start_date)}</td>
               <td>{formatDate(item[1].end_date)}</td>
+              <!-- If time of day is null set to N/A else display time of day data -->
               {#if item[1].time_of_day === null}
                 <td>N/A</td>
               {:else}
@@ -169,6 +177,7 @@
               {/if}
               <td>{item[1].team_name}</td>
               <td>{item[1].full_name}</td>
+              <!-- display boolean options as normalised values -->
               {#if item[1].approved === false}
                 <td>Rejected</td>
               {:else if item[1].approved === true}
@@ -176,6 +185,8 @@
               {:else}
                 <td>Not Reviewed Yet</td>
               {/if}
+              <!-- if the logged in user is a user and the holiday request is approved, do not display the edit and delete buttons
+              if the logged in user is an admin, display the edit and delete buttons -->
               {#if !(loggedInUser?.role_name === "User" && item[1].approved === true)}
                 <td>
                   <button
@@ -206,6 +217,7 @@
   </div>
 </main>
 
+<!-- Show modals based on which button has been clicked on  -->
 {#if $createMode}
   <CreateModal bind:showModal />
 {/if}

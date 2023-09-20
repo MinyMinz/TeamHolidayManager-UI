@@ -19,21 +19,20 @@
 </script>
 
 <nav
-  class="bg-gray-400 dark:bg-slate-900 w-full md:flex md:justify-between md:items-center z-50"
->
+  class="bg-gray-400 dark:bg-slate-900 w-full md:flex md:justify-between md:items-center z-50">
   <div class="flex items-center justify-between">
     <a
       class="ml-1 text-xl font-bold text-gray-800 hover:text-blue-500 dark:text-white md:text-2xl dark:hover:text-blue-300"
-      href="/">Phoebus Software</a
-    >
+      href="/">Phoebus Software</a>
   </div>
 
   <div
-    class="flex-col mt-8 space-y-4 md:flex md:space-y-0 md:flex-row md:items-center md:space-x-8 md:mt-0"
-  >
+    class="flex-col mt-8 space-y-4 md:flex md:space-y-0 md:flex-row md:items-center md:space-x-8 md:mt-0">
+    <!-- If isLoggedIn store is true then navbar items should be displayed -->
     {#if $isLoggedIn}
       <a class="navbarItems" href="/holidayRequest"> Holiday Requests</a>
       <a class="navbarItems" href="/user"> User Management</a>
+      <!-- if loggedinUser role is SuperAdmin user should be able to access team managment page -->
       {#if loggedInUser.role_name === "SuperAdmin"}
         <a class="navbarItems" href="/team"> Team Management</a>
       {/if}
@@ -44,23 +43,21 @@
       class="mx-2 float-left"
       on:click|preventDefault={() => {
         dark = !dark;
-      }}
-    >
+      }}>
       {#if dark}
         <Icon
           inline
           icon="line-md:sunny-outline-to-moon-loop-transition"
-          style="width: 30px; height: 30px;"
-        />
+          style="width: 30px; height: 30px;" />
       {/if}
       {#if !dark}
         <Icon
           inline
           icon="line-md:moon-to-sunny-outline-loop-transition"
-          style="width: 30px; height: 30px"
-        />
+          style="width: 30px; height: 30px" />
       {/if}
     </button>
+    <!-- This is just calling the svelte file for the loginLogoutButton to be displayed -->
     <Loginlogoutbutton />
   </div>
 </nav>

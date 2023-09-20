@@ -23,6 +23,7 @@
   let showModal: boolean = false;
   let currentUserData: User;
 
+  // reactive statement to check if the modal is closed and reset the modes and refresh the table upon sucessful creation, edit or deletion
   $: if (!showModal) {
     createMode.set(false);
     editMode.set(false);
@@ -47,6 +48,7 @@
   let columnNames = ["Full Name", "Username", "Password", "Team", "Role"];
 
   async function fetchUsers() {
+    // Fetch the data from the API based on the logged in user's role
     let userMap = new Map();
     await fetch(generateFetchURL())
       .then((res) => {
@@ -71,6 +73,7 @@
   }
 
   function generateFetchURL() {
+    // Generate the URL based on the logged in user's role
     let url = `${PUBLIC_URI}/users`;
     if (loggedInUser?.role_name === "User") {
       return (url += `?user_id=${loggedInUser.id}`);
@@ -109,6 +112,7 @@
       <caption
         class="p-5 font-semibold text-left text-gray-900 dark:text-white relative">
         <h1 class="text-2xl underline">User Management</h1>
+        <!-- If the logged in user is not a Standard User, show the create user button -->
         {#if loggedInUser?.role_name !== "User"}
           <p class="mt-1 text-lg font-normal text-gray-500 dark:text-gray-400">
             Here you can create, edit or delete users.
@@ -128,6 +132,7 @@
           </p>
         {/if}
       </caption>
+      <!-- If there are no users in the database, display a message -->
       {#if $userManagmentData === null || $userManagmentData.size === 0}
         <div class="flex flex-col items-center justify-center h-full">
           <h1 class="text-3xl font-semibold text-gray-900 dark:text-white">
@@ -138,8 +143,9 @@
           </p>
         </div>
       {:else}
-        <thead
-          class="tableHeadings">
+        <!-- If there are users in the database, display the table -->
+        <thead class="tableHeadings">
+          <!-- Loop through the column names and display them in the table -->
           <tr>
             {#each columnNames as column}
               <th scope="col" class="text-base">
@@ -150,6 +156,7 @@
           </tr>
         </thead>
         <tbody class="text-center">
+          <!-- Loop through the user data and display it in the table -->
           {#each $userManagmentData as item (item[0])}
             <tr class="text-lg text-black dark:text-gray-200">
               <td>{item[1].full_name}</td>
