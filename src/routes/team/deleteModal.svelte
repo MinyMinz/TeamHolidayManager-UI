@@ -57,7 +57,6 @@
   {/if}
   <div class="flex flex-col mt-2">
     <button class="deleteModalButton" on:click={() => deleteTeam()}
-      >Delete Team</button
-    >
+      >Delete Team</button>
   </div>
 </Modal>

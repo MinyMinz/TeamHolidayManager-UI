@@ -36,8 +36,7 @@
               class="form-input"
               type="email"
               bind:value={email}
-              required
-            />
+              required />
           </label>
         </div>
         <div class="w-full">
@@ -48,22 +47,19 @@
                 class="form-input"
                 type="text"
                 bind:value={password}
-                required
-              />
+                required />
             {:else}
               <input
                 class="form-input"
                 type="password"
                 bind:value={password}
-                required
-              />
+                required />
             {/if}
           </label>
           <button
             type="button"
             class="ml-1 absolute top-50 h-10"
-            on:click={() => (passwordVisible = !passwordVisible)}
-          >
+            on:click={() => (passwordVisible = !passwordVisible)}>
             {#if passwordVisible}
               <Icon style="font-size: 18px" icon="mdi:eye" />
               <!-- Show password icon -->
@@ -76,8 +72,7 @@
         <button
           type="button"
           class="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline w-full mt-6 mb-1"
-          on:click={handleSubmit}
-        >
+          on:click={handleSubmit}>
           Sign in
         </button>
       </form>

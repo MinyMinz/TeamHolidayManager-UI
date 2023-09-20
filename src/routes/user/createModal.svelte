@@ -138,8 +138,11 @@
   <h1 class="text-black dark:text-white" slot="header">Creating New User</h1>
   <form class="text-black dark:text-white">
     <label for="fullname">*Full Name:</label><br />
-    <input class="form-input" type="text" id="full_name" name="fullname" /><br
-    />
+    <input
+      class="form-input"
+      type="text"
+      id="full_name"
+      name="fullname" /><br />
     <label for="email">*Username:</label><br />
     <input class="form-input" type="email" id="email" name="email" /><br />
     <label for="password">*Password:</label><br />
@@ -152,8 +155,7 @@
         id="team_name"
         name="teamName"
         value={loggedInUser.team_name}
-        readonly={true}
-      /><br />
+        readonly={true} /><br />
       <label class="text-gray-600" for="roleName">*Role Name:</label><br />
       <input
         class="disabled-form-input"
@@ -161,14 +163,12 @@
         id="role_name"
         name="roleName"
         value="User"
-        readonly={true}
-      /><br />
+        readonly={true} /><br />
     {:else if loggedInUser?.role_name === "SuperAdmin"}
       <label
         for="teamName"
         class="block text-sm font-medium text-gray-900 dark:text-white"
-        >Team Name:</label
-      >
+        >Team Name:</label>
       <select class="selectorDropdown" bind:value={selectedTeam}>
         <option selected value>*Choose Team</option>
         {#each teams as team}
@@ -181,8 +181,7 @@
       <label
         for="roleName"
         class="block text-sm font-medium text-gray-900 dark:text-white"
-        >Role Name:</label
-      >
+        >Role Name:</label>
       <select class="selectorDropdown" bind:value={selectedRole}>
         <option selected value>*Choose Role</option>
         {#each roles as role}
@@ -200,7 +199,6 @@
   <br />
   <div class="flex flex-col">
     <button class="submitModalButton" on:click={() => createUser()}
-      >Create User</button
-    >
+      >Create User</button>
   </div>
 </Modal>

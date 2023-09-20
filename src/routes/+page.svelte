@@ -1,4 +1,4 @@
-<div class="defaultPage h-screen flex flex-col ">
+<div class="defaultPage h-screen flex flex-col">
   <div class="dark">
     <h1 class=" text-4xl text-center p-10 underline">
       Welcome to PSL Team Calendar

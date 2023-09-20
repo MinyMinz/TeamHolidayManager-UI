@@ -104,12 +104,10 @@
 
 <main class="defaultPage flex flex-col">
   <div
-    class="tablePage relative overflow-x-auto overflow-hidden shadow-md sm:rounded-lg"
-  >
+    class="tablePage relative overflow-x-auto overflow-hidden shadow-md sm:rounded-lg">
     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
       <caption
-        class="p-5 font-semibold text-left text-gray-900 dark:text-white relative"
-      >
+        class="p-5 font-semibold text-left text-gray-900 dark:text-white relative">
         <h1 class="text-2xl underline">User Management</h1>
         {#if loggedInUser?.role_name !== "User"}
           <p class="mt-1 text-lg font-normal text-gray-500 dark:text-gray-400">
@@ -118,8 +116,7 @@
           <button
             type="button"
             class="createButton absolute bottom-2 right-24"
-            on:click={() => setCreateMode()}
-          >
+            on:click={() => setCreateMode()}>
             <p class="icons">
               Create User
               <Icon icon="mdi:account-plus" inline={true} />
@@ -142,8 +139,7 @@
         </div>
       {:else}
         <thead
-          class="text-center text-gray-700 uppercase bg-gray-400 dark:bg-gray-700 dark:text-white"
-        >
+          class="tableHeadings">
           <tr>
             {#each columnNames as column}
               <th scope="col" class="text-base">
@@ -166,8 +162,7 @@
                 <button
                   type="button"
                   class="editButton"
-                  on:click={() => setEditMode(item[1])}
-                >
+                  on:click={() => setEditMode(item[1])}>
                   <p class="icons">
                     Edit
                     <Icon icon="mdi:account-edit" inline={true} />
@@ -177,8 +172,7 @@
                   <button
                     type="button"
                     class="deleteButton"
-                    on:click={() => setDeleteMode(item[1])}
-                  >
+                    on:click={() => setDeleteMode(item[1])}>
                     <p class="icons">
                       Delete
                       <Icon icon="mdi:account-remove" inline={true} />

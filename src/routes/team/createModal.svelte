@@ -79,15 +79,13 @@
       type="text"
       id="name"
       name="teamname"
-      required={true}
-    /><br />
+      required={true} /><br />
     <label for="description">Description:</label><br />
     <input
       class="form-input"
       type="text"
       id="description"
-      name="description"
-    /><br />
+      name="description" /><br />
     {#if msg}
       <br />
       <p class="text-red-500 font-bold text-center">{msg}</p>
@@ -96,7 +94,6 @@
   <br />
   <div class="flex flex-col">
     <button class="submitModalButton" on:click={() => createTeam()}
-      >Create Team</button
-    >
+      >Create Team</button>
   </div>
 </Modal>

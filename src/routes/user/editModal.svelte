@@ -138,24 +138,21 @@
       type="text"
       id="full_name"
       name="fullname"
-      value={userData.full_name}
-    /><br />
+      value={userData.full_name} /><br />
     <label for="email">*Username:</label><br />
     <input
       class="form-input"
       type="email"
       id="email"
       name="email"
-      value={userData.email}
-    /><br />
+      value={userData.email} /><br />
     <label for="password">*Password:</label><br />
     <input
       class="form-input"
       type="text"
       id="password"
       name="password"
-      value={userData.password}
-    /><br />
+      value={userData.password} /><br />
     {#if loggedInUser?.role_name === "User" || loggedInUser?.role_name === "Admin"}
       <label class="text-gray-600" for="teamName">*Team Name:</label><br />
       <input
@@ -164,8 +161,7 @@
         id="team_name"
         name="teamName"
         value={userData?.team_name}
-        readonly={true}
-      /><br />
+        readonly={true} /><br />
       <label class="text-gray-600" for="roleName">*Role Name:</label><br />
       <input
         class="disabled-form-input"
@@ -173,8 +169,7 @@
         id="role_name"
         name="roleName"
         value={userData?.role_name}
-        readonly={true}
-      /><br />
+        readonly={true} /><br />
     {:else if loggedInUser?.role_name === "SuperAdmin"}
       <!-- If SuperAdmin is editing their own user set by default -->
       {#if userData?.role_name === "SuperAdmin"}
@@ -185,8 +180,7 @@
           id="team_name"
           name="teamName"
           value={userData?.team_name}
-          readonly={true}
-        /><br />
+          readonly={true} /><br />
         <label class="text-gray-600" for="roleName">*Role Name:</label><br />
         <input
           class="disabled-form-input"
@@ -194,14 +188,12 @@
           id="role_name"
           name="roleName"
           value={userData?.role_name}
-          readonly={true}
-        /><br />
+          readonly={true} /><br />
       {:else}
         <label
           for="teamName"
           class="block text-sm font-medium text-gray-900 dark:text-white"
-          >Team Name:</label
-        >
+          >Team Name:</label>
         <select class="selectorDropdown" bind:value={selectedTeam}>
           <option selected value>*Choose Team</option>
           {#each teams as team}
@@ -214,8 +206,7 @@
         <label
           for="roleName"
           class="block text-sm font-medium text-gray-900 dark:text-white"
-          >Role Name:</label
-        >
+          >Role Name:</label>
         <select class="selectorDropdown" bind:value={selectedRole}>
           <option selected value>*Choose Role</option>
           {#each roles as role}
@@ -235,7 +226,6 @@
 
   <div class="flex flex-col">
     <button class="submitModalButton" on:click={() => updateUser()}
-      >Update User</button
-    >
+      >Update User</button>
   </div>
 </Modal>

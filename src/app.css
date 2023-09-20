@@ -22,6 +22,12 @@
         justify-normal;
   }
 
+  .tableHeadings{
+    @apply text-center uppercase
+     bg-gray-50 text-gray-700
+     dark:bg-gray-700 dark:text-white;
+  }
+
   .form-input {
     @apply text-black dark:text-white
         bg-gray-200 dark:bg-gray-800

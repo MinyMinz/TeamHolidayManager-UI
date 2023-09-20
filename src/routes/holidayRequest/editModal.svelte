@@ -106,8 +106,7 @@
         type="text"
         id="description"
         name="Description"
-        value={holidayData.description}
-      /><br />
+        value={holidayData.description} /><br />
       <label for="start_date">*Start Date:</label><br />
       <input
         class="form-input"
@@ -115,8 +114,7 @@
         id="start_date"
         name="start_date"
         min="2000-01-02"
-        value={holidayData.start_date}
-      /><br />
+        value={holidayData.start_date} /><br />
       <label for="end_date">*End Date:</label><br />
       <input
         class="form-input"
@@ -124,13 +122,11 @@
         id="end_date"
         name="end_date"
         min="2000-01-02"
-        value={holidayData.end_date}
-      /><br />
+        value={holidayData.end_date} /><br />
       <label
         for="timeOfDay"
         class="block text-sm font-medium text-gray-900 dark:text-white"
-        >TimeOfDay:</label
-      >
+        >TimeOfDay:</label>
       <select class="selectorDropdown" bind:value={selectedTimeOfDay}>
         <option value={null}>N/A</option>
         <option value="AM">AM</option>
@@ -143,8 +139,7 @@
         id="full_name"
         name="fullname"
         value={holidayData.full_name}
-        readonly={true}
-      /><br />
+        readonly={true} /><br />
       {#if loggedInUser?.role_name === "Admin" || loggedInUser?.role_name === "SuperAdmin"}
         <label for="approved">Status:</label><br />
         <select class="selectorDropdown" bind:value={isApproved}>
@@ -162,8 +157,7 @@
 
     <div class="flex flex-col">
       <button class="submitModalButton" on:click={() => updateHoliday()}
-        >Update</button
-      >
+        >Update</button>
     </div>
   </form>
 </Modal>

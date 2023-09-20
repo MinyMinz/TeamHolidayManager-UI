@@ -119,8 +119,7 @@
   <div class="tablePage relative overflow-x-auto shadow-md sm:rounded-lg">
     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
       <caption
-        class="p-5 font-semibold text-left text-gray-900 dark:text-white relative"
-      >
+        class="p-5 font-semibold text-left text-gray-900 dark:text-white relative">
         <h1 class="text-2xl underline">Holiday Requests</h1>
         <p class="mt-1 text-lg font-normal text-gray-500 dark:text-gray-400">
           Here you can create, edit or delete holdiay requests (Only admins can
@@ -129,8 +128,7 @@
         <button
           type="button"
           class="createButton absolute bottom-2 right-20"
-          on:click={() => setCreateMode()}
-        >
+          on:click={() => setCreateMode()}>
           <p class="icons">
             Create Request
             <Icon icon="mdi:calendar-plus-outline" inline={true} />
@@ -148,8 +146,7 @@
         </div>
       {:else}
         <thead
-          class="text-center text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-white"
-        >
+          class="tableHeadings">
           <tr>
             {#each columnNames as column}
               <th scope="col" class="text-base">
@@ -180,28 +177,26 @@
                 <td>Not Reviewed Yet</td>
               {/if}
               {#if !(loggedInUser?.role_name === "User" && item[1].approved === true)}
-              <td>
-                <button
-                  type="button"
-                  class="editButton"
-                  on:click={() => setEditMode(item[1])}
-                >
-                  <p class="icons">
-                    Edit
-                    <Icon icon="mdi:calendar-edit-outline" inline={true} />
-                  </p>
-                </button>
-                <button
-                  type="button"
-                  class="deleteButton"
-                  on:click={() => setDeleteMode(item[1])}
-                >
-                  <p class="icons">
-                    Delete
-                    <Icon icon="mdi:calendar-remove-outline" inline={true} />
-                  </p>
-                </button>
-              </td>
+                <td>
+                  <button
+                    type="button"
+                    class="editButton"
+                    on:click={() => setEditMode(item[1])}>
+                    <p class="icons">
+                      Edit
+                      <Icon icon="mdi:calendar-edit-outline" inline={true} />
+                    </p>
+                  </button>
+                  <button
+                    type="button"
+                    class="deleteButton"
+                    on:click={() => setDeleteMode(item[1])}>
+                    <p class="icons">
+                      Delete
+                      <Icon icon="mdi:calendar-remove-outline" inline={true} />
+                    </p>
+                  </button>
+                </td>
               {/if}
             </tr>
           {/each}

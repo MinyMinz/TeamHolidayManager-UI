@@ -82,29 +82,25 @@
       class="form-input"
       type="text"
       id="description"
-      name="Description"
-    /><br />
+      name="Description" /><br />
     <label for="start_date">*Start Date:</label><br />
     <input
       class="form-input"
       type="date"
       id="start_date"
       name="start_date"
-      min="2000-01-02"
-    /><br />
+      min="2000-01-02" /><br />
     <label for="end_date">*End Date:</label><br />
     <input
       class="form-input"
       type="date"
       id="end_date"
       name="end_date"
-      min="2000-01-02"
-    /><br />
+      min="2000-01-02" /><br />
     <label
       for="timeOfDay"
       class="block text-sm font-medium text-gray-900 dark:text-white"
-      >TimeOfDay:</label
-    >
+      >TimeOfDay:</label>
     <select class="selectorDropdown" bind:value={selectedTimeOfDay}>
       <option value={null}>N/A</option>
       <option value="AM">Morning</option>
@@ -117,8 +113,7 @@
       id="full_name"
       name="fullname"
       value={loggedInUser?.full_name}
-      readonly={true}
-    /><br />
+      readonly={true} /><br />
     {#if msg}
       <br />
       <p class="text-red-500 font-bold">{msg}</p>
@@ -127,7 +122,6 @@
   <br />
   <div class="flex flex-col">
     <button class="submitModalButton" on:click={() => createHolidayRequest()}
-      >Create</button
-    >
+      >Create</button>
   </div>
 </Modal>
