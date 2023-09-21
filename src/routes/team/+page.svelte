@@ -101,7 +101,7 @@
         class="p-5 font-semibold text-left text-gray-900 dark:text-white relative">
         <h1 class="text-2xl underline">Team Management</h1>
         <p class="mt-1 text-lg font-normal text-gray-500 dark:text-gray-400">
-          Here you can create, delete teams.
+          Here you can only create or delete teams.
         </p>
         <button
           type="button"
