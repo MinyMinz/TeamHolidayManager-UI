@@ -48,8 +48,8 @@
     "Start Date",
     "End Date",
     "Time Of Day",
-    "Team",
     "Name",
+    "Team Name",
     "Status",
   ];
 
@@ -175,8 +175,8 @@
               {:else}
                 <td>{item[1].time_of_day}</td>
               {/if}
-              <td>{item[1].team_name}</td>
               <td>{item[1].full_name}</td>
+              <td>{item[1].team_name}</td>
               <!-- display boolean options as normalised values -->
               {#if item[1].approved === false}
                 <td>Rejected</td>

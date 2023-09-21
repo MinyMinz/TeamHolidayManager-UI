@@ -45,7 +45,7 @@
   });
 
   //TODO: Look to autoset column names
-  let columnNames = ["Full Name", "Username", "Password", "Team", "Role"];
+  let columnNames = ["Full Name", "Username", "Password", "Team Name", "Role"];
 
   async function fetchUsers() {
     // Fetch the data from the API based on the logged in user's role
