@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { PUBLIC_URI } from "$env/static/public";
+  import { PUBLIC_URI } from "../../config";
   import Modal from "$lib/modal/globalModal.svelte";
   import { deleteMode, requestStatus, tableRefresh } from "$lib/stores/stores";
   import { getUserFromSessionStorage } from "$lib/customFunctions";

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
-  import { PUBLIC_URI } from "$env/static/public";
+  import { PUBLIC_URI } from "../../config";
   import Modal from "$lib/modal/globalModal.svelte";
   import { createMode, requestStatus, tableRefresh } from "$lib/stores/stores";
   import { getUserFromSessionStorage } from "$lib/customFunctions";

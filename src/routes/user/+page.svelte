@@ -1,6 +1,6 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
-  import { PUBLIC_URI } from "$env/static/public";
+  import { PUBLIC_URI } from "../../config";
   import {
     createMode,
     deleteMode,

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { PUBLIC_URI } from "$env/static/public";
+  import { PUBLIC_URI } from "../../config";
   import Modal from "$lib/modal/globalModal.svelte";
   import { editMode, requestStatus, tableRefresh } from "$lib/stores/stores";
   import type { UserWithPassword } from "$lib/types/customTypes";

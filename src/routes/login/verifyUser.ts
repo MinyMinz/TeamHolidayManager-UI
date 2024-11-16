@@ -1,5 +1,5 @@
 import { isLoggedIn, requestStatus } from "$lib/stores/stores"; // get global user state
-import { PUBLIC_URI } from "$env/static/public";
+import { PUBLIC_URI } from "../../config";
 
 let statusMessage: string = "";
 
