@@ -23,7 +23,7 @@
   }
 </script>
 
-<main class="defaultPage min-h-screen flex flex-col">
+<main class="defaultPage">
   <div class="login-container">
     <div class="login-form-container">
       <h1 class="login-title underline">Sign in</h1>

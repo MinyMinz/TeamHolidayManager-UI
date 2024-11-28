@@ -9,15 +9,20 @@
     @apply text-gray-800 hover:text-blue-500 dark:text-white dark:hover:text-blue-300;
   }
 
+  .pageContainer {
+    @apply bg-gray-300 dark:bg-slate-800
+     text-black dark:text-white
+        justify-center;
+  }
+
   .defaultPage {
     @apply bg-gray-300 dark:bg-slate-800
      text-black dark:text-white
-        justify-center min-h-screen;
+        justify-center pt-5 min-h-screen;
   }
 
   .tablePage {
     @apply text-black dark:text-white 
-        min-h-screen 
         flex flex-col 
         justify-normal;
   }
@@ -107,5 +112,12 @@
 
   .messageIcons {
     @apply text-2xl text-white;
+  }
+
+  .popup-container {
+    position: fixed;
+    right: 5px;
+    top: 45px; /* Adjust this value based on the height of your navbar */
+    z-index: 1000; /* Ensure it appears above other content */
   }
 }
