@@ -19,8 +19,8 @@
 </script>
 
 <nav
-  class="bg-gray-400 dark:bg-slate-900 w-full md:flex md:justify-between md:items-center z-50">
-  <div class="flex items-center justify-between">
+  class="flex-no-wrap fixed relativebg-gray-400 dark:bg-slate-900 w-full md:flex md:justify-between md:items-center z-50">
+  <div class="flex items-center justify-between">z
     <a
       class="ml-1 text-xl font-bold text-gray-800 hover:text-blue-500 dark:text-white md:text-2xl dark:hover:text-blue-300"
       href="/">Phoebus Software</a>
