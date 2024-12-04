@@ -3,9 +3,10 @@
   import Modal from "$lib/modal/globalModal.svelte";
   import { editMode, requestStatus, tableRefresh } from "$lib/stores/stores";
   import type { UserWithPassword } from "$lib/types/customTypes";
-  import { getUserFromSessionStorage } from "$lib/customFunctions";
+  import { getUserFromSessionStorage, getUserTokenFromSessionStorage } from "$lib/customFunctions";
 
   const loggedInUser: any = getUserFromSessionStorage(); //get the logged in user from sessionStorage
+  const token: any = getUserTokenFromSessionStorage(); //get the jwt token from sessionStorage
 
   export let showModal = false;
   export let userData: UserWithPassword;
@@ -35,6 +36,7 @@
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
+        'Authorization': 'bearer ' + token
       },
       body: JSON.stringify(inputList),
     })
@@ -60,29 +62,33 @@
   }
 
   async function fetchTeams() {
-    let url = `${PUBLIC_URI}/teams`;
-    //if the logged in user is an admin, only get team_name of the admin
-    if (loggedInUser?.role_name === "Admin") {
-      url += `?team_name=${loggedInUser.team_name}`;
-    }
-    await fetch(url)
-      .then((res) => res.json())
-      .then((data) => {
-        teams = data;
-      });
+    await fetch(`${PUBLIC_URI}/teams`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        'Authorization': 'bearer ' + token
+      },
+    })
+    .then((res) => res.json())
+    .then((data) => {
+      teams = data;
+    });
   }
 
   async function fetchRoles() {
-    let url = `${PUBLIC_URI}/roles`;
-    //if the logged in user is an admin, only get role_name of User
-    if (loggedInUser?.role_name === "Admin") {
-      url += `?role_name=User`;
-    }
-    await fetch(url)
-      .then((res) => res.json())
-      .then((data) => {
-        roles = data;
-      });
+    await fetch(`${PUBLIC_URI}/roles`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        'Authorization': 'bearer ' + token
+      }
+    })
+    .then((res) => res.json())
+    .then((data) => {
+      roles = data;
+    });
   }
 
   function getInputValues() {
@@ -148,13 +154,6 @@
       id="email"
       name="email"
       value={userData.email} /><br />
-    <label for="password">*Password:</label><br />
-    <input
-      class="form-input"
-      type="text"
-      id="password"
-      name="password"
-      value={userData.password} /><br />
     {#if loggedInUser?.role_name === "User" || loggedInUser?.role_name === "Admin"}
       <label class="text-gray-600" for="teamName">*Team Name:</label><br />
       <input

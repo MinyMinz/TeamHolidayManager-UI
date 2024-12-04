@@ -11,3 +11,11 @@ export function getUserFromSessionStorage() {
     }
   }
 }
+
+// Global function used to get the token from the session storage
+export function getUserTokenFromSessionStorage() {
+  if (typeof sessionStorage !== "undefined") {
+    return sessionStorage.getItem("userToken");
+  }
+  return null; // Add a return statement for cases where sessionStorage is undefined
+}

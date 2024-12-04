@@ -30,6 +30,7 @@
     // Remove the userLoggedIn from sessionStorage
     if (typeof sessionStorage !== "undefined") {
       sessionStorage.removeItem("userLoggedIn");
+      sessionStorage.removeItem("userToken");
     }
     // Reset all local stores to their default values
     isLoggedIn.set(false);

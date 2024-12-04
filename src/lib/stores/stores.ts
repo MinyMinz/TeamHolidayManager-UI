@@ -12,6 +12,8 @@ export const createMode = writable<boolean>(false); // Initialize as false
 
 export const editMode = writable<boolean>(false); // Initialize as false
 
+export const passwordEditMode = writable<boolean>(false); // Initialize as false
+
 export const deleteMode = writable<boolean>(false); // Initialize as false
 
 export const tableRefresh = writable<boolean>(false); // Initialize as false

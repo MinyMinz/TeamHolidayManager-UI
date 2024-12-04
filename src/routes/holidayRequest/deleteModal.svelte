@@ -2,9 +2,10 @@
   import { PUBLIC_URI } from "../../config";
   import Modal from "$lib/modal/globalModal.svelte";
   import { deleteMode, requestStatus, tableRefresh } from "$lib/stores/stores";
-  import { getUserFromSessionStorage } from "$lib/customFunctions";
+  import { getUserFromSessionStorage, getUserTokenFromSessionStorage } from "$lib/customFunctions";
 
   const loggedInUser: any = getUserFromSessionStorage(); //get the logged in user from sessionStorage
+  const token: any = getUserTokenFromSessionStorage(); //get the token from sessionStorage
 
   export let showModal = false;
   export let holidayData: any;
@@ -15,6 +16,11 @@
     if (msg) return; //if the user is not authorised to delete the request, return
     await fetch(`${PUBLIC_URI}/holiday-request?holiday_id=` + holidayData.id, {
       method: "DELETE",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "bearer " + token,
+      },
     })
       .then((res) => {
         if (!res.ok) {

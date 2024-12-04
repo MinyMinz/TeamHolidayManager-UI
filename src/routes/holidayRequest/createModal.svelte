@@ -2,9 +2,10 @@
   import { PUBLIC_URI } from "../../config";
   import Modal from "$lib/modal/globalModal.svelte";
   import { createMode, requestStatus, tableRefresh } from "$lib/stores/stores";
-  import { getUserFromSessionStorage } from "$lib/customFunctions";
+  import { getUserFromSessionStorage, getUserTokenFromSessionStorage } from "$lib/customFunctions";
 
   const loggedInUser: any = getUserFromSessionStorage(); //get the logged in user from sessionStorage
+  const token: any = getUserTokenFromSessionStorage(); //get the token from sessionStorage
 
   export let showModal = false;
   let msg: string;
@@ -17,6 +18,7 @@
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
+        'Authorization': 'bearer ' + token
       },
       body: JSON.stringify(inputList),
     })

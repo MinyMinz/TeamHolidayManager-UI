@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { goto } from "$app/navigation";
   import { PUBLIC_URI } from "../../config";
   import {
     createMode,
     deleteMode,
     editMode,
+    passwordEditMode,
     requestStatus,
     tableRefresh,
     userManagmentData,
@@ -15,10 +15,11 @@
   import CreateModal from "./createModal.svelte";
   import DeleteModal from "./deleteModal.svelte";
   import EditModal from "./editModal.svelte";
-
-  import { getUserFromSessionStorage } from "$lib/customFunctions";
+  import UpdatePasswordModal from "./updatePasswordModal.svelte";
+  import { getUserFromSessionStorage, getUserTokenFromSessionStorage } from "$lib/customFunctions";
 
   const loggedInUser: any = getUserFromSessionStorage(); //get the logged in user from sessionStorage
+  const token: any = getUserTokenFromSessionStorage(); //get the jwt token from sessionStorage
 
   let showModal: boolean = false;
   let currentUserData: User;
@@ -28,6 +29,7 @@
     createMode.set(false);
     editMode.set(false);
     deleteMode.set(false);
+    passwordEditMode.set(false);
 
     if ($tableRefresh) {
       fetchUsers();
@@ -45,12 +47,17 @@
   });
 
   //TODO: Look to autoset column names
-  let columnNames = ["Full Name", "Username", "Password", "Team Name", "Role"];
+  let columnNames = ["Full Name", "Username", "Team Name", "Role"];
 
   async function fetchUsers() {
     // Fetch the data from the API based on the logged in user's role
     let userMap = new Map();
-    await fetch(generateFetchURL())
+    await fetch(`${PUBLIC_URI}/users`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'bearer ' + token
+        }
+      })
       .then((res) => {
         if (!res.ok) {
           throw new Error(`Status: ${res.status} `);
@@ -72,21 +79,6 @@
     tableRefresh.set(false);
   }
 
-  function generateFetchURL() {
-    // Generate the URL based on the logged in user's role
-    let url = `${PUBLIC_URI}/users`;
-    if (loggedInUser?.role_name === "User") {
-      return (url += `?user_id=${loggedInUser.id}`);
-    } else if (loggedInUser.role_name === "Admin") {
-      return (url += `?team=${loggedInUser.team_name}`);
-    } else if (loggedInUser.role_name === "SuperAdmin") {
-      return url;
-    } else {
-      goto("/login");
-      throw new Error(`Failed to fetch data. User not logged in.`);
-    }
-  }
-
   function setEditMode(userData: any) {
     showModal = true;
     $editMode = true;
@@ -103,6 +95,12 @@
     $deleteMode = true;
     currentUserData = userData;
   }
+
+  function setUpdatePasswordMode(userData: any) {
+    showModal = true;
+    $passwordEditMode = true;
+    currentUserData = userData;
+  }
 </script>
 
 <!-- <main class="defaultPage flex flex-col">  -->
@@ -110,8 +108,7 @@
   <div
     class="tablePage relative overflow-x-auto overflow-hidden shadow-md sm:rounded-lg">
     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-      <caption
-        class="p-5 font-semibold text-left text-gray-900 dark:text-white relative">
+      <caption class="p-5 font-semibold text-left text-gray-900 dark:text-white relative">
         <h1 class="text-2xl underline">User Management</h1>
         <!-- If the logged in user is not a Standard User, show the create user button -->
         {#if loggedInUser?.role_name !== "User"}
@@ -153,7 +150,7 @@
                 {column}
               </th>
             {/each}
-            <th class="text-base w-1/6"> Actions </th>
+            <th class="text-base w-[35%]"> Actions </th>
           </tr>
         </thead>
         <tbody class="text-center">
@@ -162,8 +159,6 @@
             <tr class="text-lg text-black dark:text-gray-200">
               <td>{item[1].full_name}</td>
               <td>{item[1].email}</td>
-              <!-- This is to replace password with *'s-->
-              <td>{"*".repeat(12)}</td>
               <td>{item[1].team_name}</td>
               <td>{item[1].role_name}</td>
               <td>
@@ -176,7 +171,17 @@
                     <Icon icon="mdi:account-edit" inline={true} />
                   </p>
                 </button>
-                {#if loggedInUser?.role_name !== "User" && item[1].role_name !== "SuperAdmin"}
+                
+                <button
+                  type="button"
+                  class="passwordButton"
+                  on:click={() => setUpdatePasswordMode(item[1])}>
+                  <p class="icons">
+                    Update Password
+                    <Icon icon="mdi:account-edit" inline={true} />
+                  </p>
+              </button>
+              {#if loggedInUser?.role_name !== "User" && item[1].role_name !== "SuperAdmin"}
                   <button
                     type="button"
                     class="deleteButton"
@@ -202,6 +207,10 @@
 
 {#if $editMode}
   <EditModal userData={currentUserData} bind:showModal />
+{/if}
+
+{#if $passwordEditMode}
+  <UpdatePasswordModal userData={currentUserData} bind:showModal />
 {/if}
 
 {#if $deleteMode}

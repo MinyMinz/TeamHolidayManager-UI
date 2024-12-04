@@ -5,31 +5,36 @@ let statusMessage: string = "";
 
 export async function verifyCredentials(email: string, password: string) {
   // Send user credentials to server for verification and set global userlogin state and session storage if valid
+
   await window
-    .fetch(`${PUBLIC_URI}/users/login`, {
+    .fetch(`${PUBLIC_URI}/auth/token`, {
       method: "POST",
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+        Accept: "application/x-www-form-urlencoded",
+        "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: JSON.stringify({ email, password }),
+      body: new URLSearchParams({
+        grant_type: "password",
+        username: email,
+        password: password,
+        scope: "",
+        client_id: "string",
+        client_secret: "string"
+      }),
     })
     .then((res) => {
       return res.json(); 
     })
     .then((data) => {
-      if (data.email === email && data.password === password) {
+      if (data.access_token !== null) {
         // Clear any previous error messages and set status to success
         statusMessage = "success"; 
         requestStatus.set(statusMessage);
-        const { id, email, full_name, team_name, role_name } = data;
         // Set global userLogin state
         isLoggedIn.set(true); 
         // Set userLoggedIn in session storage
-        window.sessionStorage.setItem(
-          "userLoggedIn",
-          JSON.stringify({ id, email, full_name, team_name, role_name })
-        );
+        window.sessionStorage.setItem("userLoggedIn", JSON.stringify(data.user_data));
+        window.sessionStorage.setItem("userToken", data.access_token);
       } else {
         statusMessage = "Invalid email or password.";
       }

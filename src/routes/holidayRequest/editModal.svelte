@@ -3,9 +3,10 @@
   import Modal from "$lib/modal/globalModal.svelte";
   import { editMode, requestStatus, tableRefresh } from "$lib/stores/stores";
   import type { Holiday } from "$lib/types/customTypes";
-  import { getUserFromSessionStorage } from "$lib/customFunctions";
+  import { getUserFromSessionStorage, getUserTokenFromSessionStorage } from "$lib/customFunctions";
 
   const loggedInUser: any = getUserFromSessionStorage(); //get the logged in user from sessionStorage
+  const token: any = getUserTokenFromSessionStorage(); //get the token from sessionStorage
 
   export let showModal = false;
   export let holidayData: Holiday;
@@ -21,6 +22,7 @@
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
+        'Authorization': 'bearer ' + token
       },
       body: JSON.stringify(inputList),
     })
