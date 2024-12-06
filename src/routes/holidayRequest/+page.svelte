@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { goto } from "$app/navigation";
   import { PUBLIC_URI } from "../../config";
   import {
     createMode,
@@ -15,9 +14,10 @@
   import CreateModal from "./createModal.svelte";
   import DeleteModal from "./deleteModal.svelte";
   import EditModal from "./editModal.svelte";
-  import { getUserFromSessionStorage } from "$lib/customFunctions";
+  import { getUserFromSessionStorage, getUserTokenFromSessionStorage } from "$lib/customFunctions";
 
   const loggedInUser: any = getUserFromSessionStorage(); //get the logged in user from sessionStorage
+  const token: any = getUserTokenFromSessionStorage(); //get the logged in user from sessionStorag
 
   let showModal: boolean = false;
   let holidayData: Holiday;
@@ -56,43 +56,34 @@
   async function fetchHolidayRequests() {
     // Fetch the data from the API based on the logged in user's role
     let holidayMap = new Map();
-    await fetch(generateFetchURL())
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`Failed to fetch data. Status: ${res.status}`);
-        }
-        return res.json();
-      })
-      .then((data) => {
-        // //if the response is an array, map the array to the holidayMap
-        if (Array.isArray(data)) {
-          data.forEach((value, index) => holidayMap.set(index, value));
-        } else {
-          //if there is only one holidayRequest, the response is not an array
-          holidayMap.set(0, data);
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-        throw err; // Re-throw the error to propagate it to the caller
-      });
+    await fetch(`${PUBLIC_URI}/holiday-request`, {
+      headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            'Authorization': 'bearer ' + token
+          },
+    })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error(`Failed to fetch data. Status: ${res.status}`);
+      }
+      return res.json();
+    })
+    .then((data) => {
+      // //if the response is an array, map the array to the holidayMap
+      if (Array.isArray(data)) {
+        data.forEach((value, index) => holidayMap.set(index, value));
+      } else {
+        //if there is only one holidayRequest, the response is not an array
+        holidayMap.set(0, data);
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      throw err; // Re-throw the error to propagate it to the caller
+    });
     holidayManagmentData.set(holidayMap);
     tableRefresh.set(false);
-  }
-
-  function generateFetchURL() {
-    // Generate the URL based on the logged in user's role
-    let url = `${PUBLIC_URI}/holiday-request`;
-    if (loggedInUser?.role_name === "User") {
-      return (url += `?user_id=${loggedInUser.id}`);
-    } else if (loggedInUser.role_name === "Admin") {
-      return (url += `?team_name=${loggedInUser.team_name}`);
-    } else if (loggedInUser.role_name === "SuperAdmin") {
-      return url;
-    } else {
-      goto("/login");
-      throw new Error(`Failed to fetch data. User not logged in.`);
-    }
   }
 
   function setEditMode(data: any) {

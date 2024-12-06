@@ -12,11 +12,12 @@
   import { onMount } from "svelte";
   import CreateModal from "./createModal.svelte";
   import DeleteModal from "./deleteModal.svelte";
-  import { getUserFromSessionStorage } from "$lib/customFunctions";
+  import { getUserFromSessionStorage, getUserTokenFromSessionStorage } from "$lib/customFunctions";
 
   let showModal: boolean = false;
   let teamName: string;
   const loggedInUser: any = getUserFromSessionStorage(); //get the logged in user from sessionStorage
+  const token: any = getUserTokenFromSessionStorage();
 
   // reactive statement to check if the modal is closed and reset the modes and refresh the table upon sucessful creation or deletion
   $: if (!showModal) {
@@ -46,31 +47,37 @@
     // In the event user has managed to access this page without being logged in as SuperAdmin, redirect to root page
     checkIfAuthorized();
     let teamMap = new Map();
-    await fetch(`${PUBLIC_URI}/teams`)
-      .then((res) => {
-        if (!res.ok) {
-          if (res.status === 401) {
-            goto("/");
-            throw new Error(`Unauthorized access. Status: ${res.status}`);
-          } else {
-            throw new Error(`Failed to fetch data. Status: ${res.status}`);
-          }
-        }
-        return res.json();
-      })
-      .then((res) => {
-        if (Array.isArray(res)) {
-          res.forEach((value, index) => teamMap.set(index, value));
+    await fetch(`${PUBLIC_URI}/teams`, {
+      headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          'Authorization': 'bearer ' + token
+        },
+    })
+    .then((res) => {
+      if (!res.ok) {
+        if (res.status === 401) {
+          goto("/");
+          throw new Error(`Unauthorized access. Status: ${res.status}`);
         } else {
-          teamMap.set(0, res);
+          throw new Error(`Failed to fetch data. Status: ${res.status}`);
         }
-        teamMap.delete("Super");
-        return teamMap;
-      })
-      .catch((err) => {
-        console.error(err); // log the error
-        throw err; // rethrow the error to be caught by the caller
-      });
+      }
+      return res.json();
+    })
+    .then((res) => {
+      if (Array.isArray(res)) {
+        res.forEach((value, index) => teamMap.set(index, value));
+      } else {
+        teamMap.set(0, res);
+      }
+      teamMap.delete("Super");
+      return teamMap;
+    })
+    .catch((err) => {
+      console.error(err); // log the error
+      throw err; // rethrow the error to be caught by the caller
+    });
     teamManagmentData.set(teamMap);
     tableRefresh.set(false);
   }
