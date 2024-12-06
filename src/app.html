@@ -6,8 +6,20 @@
 		<meta name="viewport" content="width=device-width" />
 		%sveltekit.head%
 		<title>Team Calendar</title>
-	</head>
-	<body>
+		<script>
+			document.addEventListener('DOMContentLoaded', () => {
+			  const customHeaders = document.querySelector('meta[name="custom-headers"]');
+			  if (customHeaders) {
+				const headers = JSON.parse(customHeaders.content);
+				console.log('Security Headers:', headers);
+			  }
+			});
+		  </script>
+		</head>
+		<body>
+		  <!-- Your app content -->
+		  <meta name="custom-headers" content="">
+		</body>
 		<div style="display: contents">%sveltekit.body%</div>
 	</body>
 </html>
