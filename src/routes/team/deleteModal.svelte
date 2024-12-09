@@ -6,6 +6,7 @@
   import { getUserFromSessionStorage } from "$lib/customFunctions";
 
   const loggedInUser: any = getUserFromSessionStorage(); //get the logged in user from sessionStorage
+  const token: any = getUserFromSessionStorage(); //get the logged in user from sessionStorage
 
   export let showModal = false;
   export let teamName: any;
@@ -20,6 +21,11 @@
     }
     await fetch(`${PUBLIC_URI}/teams?team_name=${teamName}`, {
       method: "DELETE",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        'Authorization': 'bearer ' + token
+      }
     })
       .then((res) => {
         if (!res.ok) {
