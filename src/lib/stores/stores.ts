@@ -2,7 +2,7 @@ import { writable } from "svelte/store";
 
 
 // store for checking if user is logged in
-export const isLoggedIn = writable<boolean>(false); // Initialize as false
+export const userIsLoggedIn = writable<boolean>(false); // Initialize as false
 
 // store for request message when doing an api call
 export const requestStatus = writable<string | null>(null); // Initialize as null

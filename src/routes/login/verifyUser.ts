@@ -1,4 +1,4 @@
-import { isLoggedIn, requestStatus } from "$lib/stores/stores"; // get global user state
+import { userIsLoggedIn, requestStatus } from "$lib/stores/stores"; // get global user state
 import { PUBLIC_URI } from "../../config";
 
 let statusMessage: string = "";
@@ -31,7 +31,7 @@ export async function verifyCredentials(email: string, password: string) {
         statusMessage = "success"; 
         requestStatus.set(statusMessage);
         // Set global userLogin state
-        isLoggedIn.set(true); 
+        userIsLoggedIn.set(true); 
         // Set userLoggedIn in session storage
         window.sessionStorage.setItem("userLoggedIn", JSON.stringify(data.user_data));
         window.sessionStorage.setItem("userToken", data.access_token);

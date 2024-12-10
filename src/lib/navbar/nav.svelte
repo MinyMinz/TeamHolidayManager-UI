@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { isLoggedIn, requestStatus } from "$lib/stores/stores";
+  import { userIsLoggedIn, requestStatus } from "$lib/stores/stores";
   import Icon from "@iconify/svelte";
   import Loginlogoutbutton from "./loginlogoutbutton.svelte";
 
@@ -7,7 +7,7 @@
   let requestMessage = "";
 
   const loggedInUser: any = {};
-  $: if ($isLoggedIn) {
+  $: if (globalThis.$userIsLoggedIn) {
     if (typeof sessionStorage !== "undefined") {
       const userLoggedIn = sessionStorage.getItem("userLoggedIn");
       if (userLoggedIn !== null) {
@@ -40,8 +40,8 @@
 
   <div
     class="flex-col mt-8 space-y-4 md:flex md:space-y-0 md:flex-row md:items-center md:space-x-8 md:mt-0">
-    <!-- If isLoggedIn store is true then navbar items should be displayed -->
-    {#if $isLoggedIn}
+    <!-- If userIsLoggedIn store is true then navbar items should be displayed -->
+    {#if globalThis.$userIsLoggedIn}
       <a class="navbarItems" href="/holidayRequest"> Holiday Requests</a>
       <a class="navbarItems" href="/user"> User Management</a>
       <!-- if loggedinUser role is SuperAdmin user should be able to access team managment page -->

@@ -5,7 +5,7 @@
     deleteMode,
     editMode,
     holidayManagmentData,
-    isLoggedIn,
+    userIsLoggedIn,
     requestStatus,
     tableRefresh,
     teamManagmentData,
@@ -33,7 +33,7 @@
       sessionStorage.removeItem("userToken");
     }
     // Reset all local stores to their default values
-    isLoggedIn.set(false);
+    userIsLoggedIn.set(false);
     createMode.set(false);
     editMode.set(false);
     deleteMode.set(false);
