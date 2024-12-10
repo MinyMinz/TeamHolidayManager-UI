@@ -30,6 +30,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"cross-spawn": "^7.0.6",
 		"rollup": "^4.26.0",
 		"svelte-icons": "^2.1.0"
 	}
