@@ -61,29 +61,33 @@
   }
 
   async function fetchTeams() {
-    let url = `${PUBLIC_URI}/teams`;
-    //if the logged in user is an admin, only get team_name of the admin
-    if (loggedInUser?.role_name === "Admin") {
-      url += `?team_name=${loggedInUser.team_name}`;
-    }
-    await fetch(url)
-      .then((res) => res.json())
-      .then((data) => {
-        teams = data;
-      });
+    await fetch(`${PUBLIC_URI}/teams`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        'Authorization': 'bearer ' + token
+      },
+    })
+    .then((res) => res.json())
+    .then((data) => {
+      teams = data;
+    });
   }
 
   async function fetchRoles() {
-    let url = `${PUBLIC_URI}/roles`;
-    //if the logged in user is an admin, only get role_name of User
-    if (loggedInUser?.role_name === "Admin") {
-      url += `?role_name=User`;
-    }
-    await fetch(url)
-      .then((res) => res.json())
-      .then((data) => {
-        roles = data;
-      });
+    await fetch(`${PUBLIC_URI}/roles`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        'Authorization': 'bearer ' + token
+      }
+    })
+    .then((res) => res.json())
+    .then((data) => {
+      roles = data;
+    });
   }
 
   function getInputValues() {
