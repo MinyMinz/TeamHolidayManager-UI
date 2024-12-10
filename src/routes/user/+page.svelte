@@ -181,7 +181,7 @@
                     <Icon icon="mdi:account-edit" inline={true} />
                   </p>
               </button>
-              {#if loggedInUser?.role_name !== "User" || loggedInUser?.role_name !== "Admin" && item[1].role_name !== "SuperAdmin"}
+              {#if loggedInUser?.role_name !== "User" && item[1].role_name !== "SuperAdmin"}
                   <button
                     type="button"
                     class="deleteButton"
