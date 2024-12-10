@@ -47,7 +47,7 @@ export async function verifyCredentials(email: string, password: string) {
       console.error(err);
       // Check if the error is due to invalid email or password
       if (err.message.includes("No records found")) {
-        statusMessage = "Invalid email or password";
+        statusMessage = "Invalid email or password.";
       } else {
         statusMessage = "An error occurred. Please try again.";
       }
