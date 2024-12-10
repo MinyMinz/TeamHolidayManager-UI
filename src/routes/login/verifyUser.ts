@@ -41,16 +41,13 @@ export async function verifyCredentials(email: string, password: string) {
         // Set userLoggedIn in session storage
         window.sessionStorage.setItem("userLoggedIn", JSON.stringify(data.user_data));
         window.sessionStorage.setItem("userToken", data.access_token);
-      } else {
-        statusMessage = "Invalid email or password.";
-        requestStatus.set(statusMessage);
       }
     })
     .catch((err) => {
       console.error(err);
       // Check if the error is due to invalid email or password
       if (err.message.includes("No records found")) {
-        statusMessage = "Invalid email or password.";
+        statusMessage = "Invalid email or password";
       } else {
         statusMessage = "An error occurred. Please try again.";
       }

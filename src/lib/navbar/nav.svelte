@@ -19,7 +19,7 @@
   }
 
     // store subscription to check if requestStatus is set and set the requestMessage for the page accordingly
-    requestStatus.subscribe((value) => {
+    requestStatus.subscribe((value: string | null) => {
     if (value === null) {
       return;
     }
@@ -92,7 +92,7 @@
     <div class="flex items-center p-3 mb-3 text-white rounded-lg bg-red-500 dark:bg-red-900">
       <Icon class="messageIcons" icon="line-md:alert-circle" />
       <div class="ml-3 text-lg font-bold">
-        {"Request " + requestStatus + "!"}
+        {"Request " + requestMessage + "!"}
       </div>
       <button
         type="button"
