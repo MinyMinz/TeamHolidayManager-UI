@@ -4,7 +4,9 @@ export type User = {
     password: string,
     full_name: string,
     team_name: string,
-    role_name: string
+    role_name: string,
+    allocated_holidays: number,
+    remaining_holidays: number,
 };
 
 export type UserWithPassword = User & { password: string };

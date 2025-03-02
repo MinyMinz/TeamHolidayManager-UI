@@ -3,7 +3,10 @@
   import Modal from "$lib/modal/globalModal.svelte";
   import { editMode, requestStatus, tableRefresh } from "$lib/stores/stores";
   import type { UserWithPassword } from "$lib/types/customTypes";
-  import { getUserFromSessionStorage, getUserTokenFromSessionStorage } from "$lib/customFunctions";
+  import {
+    getUserFromSessionStorage,
+    getUserTokenFromSessionStorage,
+  } from "$lib/customFunctions";
 
   const loggedInUser: any = getUserFromSessionStorage(); //get the logged in user from sessionStorage
   const token: any = getUserTokenFromSessionStorage(); //get the jwt token from sessionStorage
@@ -36,7 +39,7 @@
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        'Authorization': 'bearer ' + token
+        Authorization: "bearer " + token,
       },
       body: JSON.stringify(inputList),
     })
@@ -67,13 +70,13 @@
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        'Authorization': 'bearer ' + token
+        Authorization: "bearer " + token,
       },
     })
-    .then((res) => res.json())
-    .then((data) => {
-      teams = data;
-    });
+      .then((res) => res.json())
+      .then((data) => {
+        teams = data;
+      });
   }
 
   async function fetchRoles() {
@@ -82,13 +85,13 @@
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        'Authorization': 'bearer ' + token
-      }
+        Authorization: "bearer " + token,
+      },
     })
-    .then((res) => res.json())
-    .then((data) => {
-      roles = data;
-    });
+      .then((res) => res.json())
+      .then((data) => {
+        roles = data;
+      });
   }
 
   function getInputValues() {
@@ -111,6 +114,10 @@
       inputList.role_name = loggedInUser?.role_name;
     } else {
       inputList.role_name = selectedRole;
+    }
+    if (loggedInUser?.role_name !== "SuperAdmin") {
+      inputList.allocated_holidays = userData.allocated_holidays;
+      inputList.remaining_holidays = userData.remaining_holidays;
     }
     return inputList;
   }
@@ -146,14 +153,16 @@
       type="text"
       id="full_name"
       name="fullname"
-      value={userData.full_name} /><br />
+      value={userData.full_name}
+    /><br />
     <label for="email">*Username:</label><br />
     <input
       class="form-input"
       type="email"
       id="email"
       name="email"
-      value={userData.email} /><br />
+      value={userData.email}
+    /><br />
     {#if loggedInUser?.role_name === "User" || loggedInUser?.role_name === "Admin"}
       <label class="text-gray-600" for="teamName">*Team Name:</label><br />
       <input
@@ -162,7 +171,8 @@
         id="team_name"
         name="teamName"
         value={userData?.team_name}
-        readonly={true} /><br />
+        readonly={true}
+      /><br />
       <label class="text-gray-600" for="roleName">*Role Name:</label><br />
       <input
         class="disabled-form-input"
@@ -170,7 +180,8 @@
         id="role_name"
         name="roleName"
         value={userData?.role_name}
-        readonly={true} /><br />
+        readonly={true}
+      /><br />
     {:else if loggedInUser?.role_name === "SuperAdmin"}
       <!-- If SuperAdmin is editing their own user set by default -->
       {#if userData?.role_name === "SuperAdmin"}
@@ -181,7 +192,8 @@
           id="team_name"
           name="teamName"
           value={userData?.team_name}
-          readonly={true} /><br />
+          readonly={true}
+        /><br />
         <label class="text-gray-600" for="roleName">*Role Name:</label><br />
         <input
           class="disabled-form-input"
@@ -189,12 +201,14 @@
           id="role_name"
           name="roleName"
           value={userData?.role_name}
-          readonly={true} /><br />
+          readonly={true}
+        /><br />
       {:else}
         <label
           for="teamName"
           class="block text-sm font-medium text-gray-900 dark:text-white"
-          >Team Name:</label>
+          >Team Name:</label
+        >
         <select class="selectorDropdown" bind:value={selectedTeam}>
           <option selected value>*Choose Team</option>
           {#each teams as team}
@@ -203,11 +217,11 @@
             {/if}
           {/each}
         </select>
-
         <label
           for="roleName"
           class="block text-sm font-medium text-gray-900 dark:text-white"
-          >Role Name:</label>
+          >Role Name:</label
+        >
         <select class="selectorDropdown" bind:value={selectedRole}>
           <option selected value>*Choose Role</option>
           {#each roles as role}
@@ -216,6 +230,27 @@
             {/if}
           {/each}
         </select>
+        <!-- add allocated and remaining holidays -->
+        <label for="allocatedHolidays">*Allocated Holidays:</label>
+        <br />
+        <input
+          class="form-input"
+          type="number"
+          id="allocated_holidays"
+          name="allocatedHolidays"
+          value={userData?.allocated_holidays}
+        />
+        <br />
+        <label for="remainingHolidays">*Remaining Holidays:</label>
+        <br />
+        <input
+          class="form-input"
+          type="number"
+          id="remaining_holidays"
+          name="remainingHolidays"
+          value={userData?.remaining_holidays}
+        />
+        <br />
       {/if}
     {/if}
     {#if msg}
@@ -227,6 +262,7 @@
 
   <div class="flex flex-col">
     <button class="submitModalButton" on:click={() => updateUser()}
-      >Update User</button>
+      >Update User</button
+    >
   </div>
 </Modal>

@@ -16,6 +16,11 @@
   let selectedTeam = "";
   let selectedRole = "";
 
+  let allocatedHolidays = 0;
+  let remainingHolidays = 0;
+
+  $: remainingHolidays = allocatedHolidays;
+
   if (!loggedInUser) {
     goto("/");
   } else if (
@@ -100,6 +105,7 @@
     inputs.forEach((input) => {
       inputList[input.id] = input.value;
     });
+    inputList["remaining_holidays"] = remainingHolidays;
     //if the logged in user is a SuperAdmin, check if a team and role are selected
     if (loggedInUser?.role_name === "SuperAdmin") {
       if (selectedTeam === "" || selectedRole === "") {
@@ -110,6 +116,7 @@
         inputList.team_name = selectedTeam;
         inputList.role_name = selectedRole;
       }
+      
     } else {
       // Admins and Users should not be able to set a team or role they should be set
       inputList.team_name = loggedInUser?.team_name;
@@ -198,6 +205,21 @@
           {/if}
         {/each}
       </select>
+      <!-- add allocated and remaining holidays -->
+      <label for="allocatedHolidays">*Allocated Holidays:</label><br />
+      <input
+        class="form-input"
+        type="number"
+        id="allocated_holidays"
+        name="allocatedHolidays"
+        bind:value={allocatedHolidays} /><br />
+      <label for="remainingHolidays">*Remaining Holidays:</label><br />
+      <input
+        class="disabled-form-input"
+        type="number"
+        id="remaining_holidays"
+        name="remainingHolidays"
+        bind:value={remainingHolidays} /><br />
     {/if}
     {#if msg}
       <br />

@@ -47,7 +47,7 @@
   });
 
   //TODO: Look to autoset column names
-  let columnNames = ["Full Name", "Username", "Team Name", "Role"];
+  let columnNames = ["Full Name", "Username", "Team Name", "Role", "Allocated Leave", "Remaning Leave"];
 
   async function fetchUsers() {
     // Fetch the data from the API based on the logged in user's role
@@ -103,7 +103,6 @@
   }
 </script>
 
-<!-- <main class="defaultPage flex flex-col">  -->
 <main class="defaultPage"> 
   <div
     class="tablePage relative overflow-x-auto overflow-hidden shadow-md sm:rounded-lg">
@@ -161,6 +160,8 @@
               <td>{item[1].email}</td>
               <td>{item[1].team_name}</td>
               <td>{item[1].role_name}</td>
+              <td>{item[1].allocated_holidays}</td>
+              <td>{item[1].remaining_holidays}</td>
               <td>
                 <button
                   type="button"
