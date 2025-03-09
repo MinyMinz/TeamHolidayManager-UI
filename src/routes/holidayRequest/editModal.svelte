@@ -151,7 +151,7 @@
         <option value="AM">AM</option>
         <option value="PM">PM</option>
       </select>
-      <label class="text-gray-600" for="fullname">*Fullname:</label><br />
+      <label class="text-gray-600" for="fullname">*Full name:</label><br />
       <input
         class="disabled-form-input"
         type="text"

@@ -118,7 +118,7 @@
       <option value="AM">Morning</option>
       <option value="PM">Afternoon</option>
     </select>
-    <label class="text-gray-600" for="fullname">*Fullname:</label><br />
+    <label class="text-gray-600" for="fullname">*Full name:</label><br />
     <input
       class="disabled-form-input"
       type="text"
