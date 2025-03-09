@@ -112,7 +112,7 @@
     <label
       for="timeOfDay"
       class="block text-sm font-medium text-gray-900 dark:text-white"
-      >TimeOfDay:</label>
+      >Time Of Day:</label>
     <select class="selectorDropdown" bind:value={selectedTimeOfDay}>
       <option value={null}>N/A</option>
       <option value="AM">Morning</option>
